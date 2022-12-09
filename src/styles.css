@@ -1,0 +1,8 @@
+@layer components 
+
+.crossword {
+	@apply flex flex-col items-center justify-center bg-red-600;
+}
+.grid {
+	@apply flex flex-col items-center justify-center bg-red-600;
+}
