@@ -1,29 +1,42 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, PointerEvent, useEffect, useMemo } from 'react';
 import { data1, data2 } from './data';
 import { Crossword as CrosswordLib } from '@jaredreisinger/react-crossword';
+import {
+	CluesInputOriginal,
+	ClueTypeOriginal,
+	Direction,
+} from '@jaredreisinger/react-crossword/dist/types';
+import { postGameState } from './api';
 
-type CrosswordProps = {} & React.HTMLAttributes<HTMLDivElement>;
+type CrosswordProps = {
+	data: CluesInputOriginal;
+	onUpdate: (data: CluesInputOriginal) => void;
+	onCorrect: (direction: Direction, num: string, answer: string) => void;
+} & React.HTMLAttributes<HTMLDivElement>;
 
-const Crossword: FC<CrosswordProps> = () => {
+const Crossword: FC<CrosswordProps> = ({ data, onUpdate, onCorrect }) => {
 	const [color, setColor] = React.useState('#aaaaaa');
-	const [dataState, setDataState] = React.useState(data2);
+	const [dataState, setDataState] = React.useState(data);
 	const [lastKey, setLastKey] = React.useState('');
-	const handleCorrect = (text: string) => {
-		//* Do something here
-		// setDataState(data2);
-	};
+
+	const updatedData = useMemo(() => {
+		console.log('dataState: ', data);
+
+		return data;
+	}, []);
 
 	useEffect(() => {
-		const solved = localStorage.getItem('hasBeenSolved');
+		const solved = localStorage.getItem('crosswordSolved');
 		const epicPassword = localStorage.getItem('epicPassword');
-		const guesses = localStorage.getItem('guesses');
+
+		console.log('data', data);
 
 		if (!solved) {
-			localStorage.setItem('hasBeenSolved', 'false');
+			localStorage.setItem('crosswordSolved', 'false');
 		}
 		if (solved === 'true') {
-			alert('Sig mig hvad fuck er det du prøver på??');
-			localStorage.setItem('hasBeenSolved', 'false');
+			alert('Nåå, der troede du lige, at du var smart, hva?');
+			localStorage.setItem('crosswordSolved', 'false');
 		}
 		if (!epicPassword) {
 			localStorage.setItem('epicPassword', 'ISwan');
@@ -32,41 +45,50 @@ const Crossword: FC<CrosswordProps> = () => {
 	}, []);
 
 	return (
-		<div className="grid grid-cols-crossword space w-full h-full">
-			<CrosswordLib
-				onAnswerCorrect={() => handleCorrect('onAnswerCorrect')}
-				onCorrect={() => {
-					console.log('onCorrect');
-				}}
-				onCrosswordCorrect={() => {
-					alert("You've solved the puzzle!");
-				}}
-				onCellChange={(row, col, char) => {
-					if (char) updateRealStorage();
-				}}
-				acrossLabel="Horizontal"
-				downLabel="Vertical"
-				data={dataState}
-				storageKey="crossword"
-				useStorage={true}
-				theme={{
-					gridBackground: '#54637944',
-					cellBackground: color,
-					numberColor: '#6c70c5',
-					highlightBackground: '#dddddd14',
-					focusBackground: '#4444cc',
-					columnBreakpoint: '100px',
-				}}
-			/>
-		</div>
+		<>
+			{data && (
+				<div
+					className="grid grid-cols-crossword space w-full h-full"
+					onKeyDown={() => updateRealStorage(null)}
+					onPointerMove={e => updateRealStorage(e)}
+				>
+					<CrosswordLib
+						onAnswerCorrect={(direction, number, answer) => {
+							onCorrect(direction, number, answer);
+						}}
+						onCorrect={(direction, number, answer) => {
+							onCorrect(direction, number, answer);
+						}}
+						onCrosswordCorrect={() => {
+							alert("You've solved the puzzle!");
+						}}
+						acrossLabel="Horizontal"
+						downLabel="Vertical"
+						data={updatedData}
+						storageKey="crossword"
+						useStorage={true}
+						theme={{
+							gridBackground: 'transparent',
+							// gridBackground: '#54637944',
+							cellBackground: color,
+							numberColor: '#6c70c5',
+							highlightBackground: '#dddddd14',
+							focusBackground: '#4444cc',
+							columnBreakpoint: '100px',
+						}}
+					/>
+				</div>
+			)}
+		</>
 	);
 
-	function updateRealStorage() {
+	function updateRealStorage(e: PointerEvent<HTMLDivElement> | null) {
 		const crossword = localStorage.getItem('crossword');
 		if (!crossword) return;
 
 		const myCrossword = JSON.parse(crossword);
 		localStorage.setItem('myCrossword', JSON.stringify(myCrossword));
+		if (!e?.target) onUpdate(updatedData);
 	}
 
 	function updateFromRealStorage() {
