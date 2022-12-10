@@ -1,97 +1,16 @@
 import React, { FC, useEffect } from 'react';
-
+import { data1, data2 } from './data';
 import { Crossword as CrosswordLib } from '@jaredreisinger/react-crossword';
-
-const data = {
-	across: {
-		1: {
-			clue: 'one plus one',
-			answer: 'TWO',
-			row: 0,
-			col: 0,
-		},
-		3: {
-			clue: 'two plus two',
-			answer: 'error',
-			row: 2,
-			col: 2,
-		},
-	},
-	// 	3: {
-	// 		clue: 'two plus two',
-	// 		answer: 'error',
-	// 		row: 2,
-	// 		col: 2,
-	// },
-	down: {
-		2: {
-			clue: 'three minus two',
-			answer: 'ONE',
-			row: 0,
-			col: 2,
-		},
-		4: {
-			clue: 'three minus two',
-			answer: 'ONE',
-			row: 2,
-			col: 5,
-		},
-		5: {
-			clue: 'Guess a few more to get this hint',
-			answer: 'ONE',
-			row: 4,
-			col: 3,
-		},
-	},
-};
-const data2 = {
-	across: {
-		1: {
-			clue: 'one plus one',
-			answer: 'TWO',
-			row: 0,
-			col: 0,
-		},
-		3: {
-			clue: 'two plus two',
-			answer: 'error',
-			row: 2,
-			col: 2,
-		},
-	},
-	down: {
-		2: {
-			clue: 'three minus two',
-			answer: 'ONE',
-			row: 0,
-			col: 2,
-		},
-		4: {
-			clue: 'three minus two',
-			answer: 'ONE',
-			row: 2,
-			col: 5,
-		},
-		5: {
-			clue: 'three minus two',
-			answer: 'ONE',
-			row: 4,
-			col: 3,
-		},
-	},
-};
 
 type CrosswordProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
 const Crossword: FC<CrosswordProps> = () => {
 	const [color, setColor] = React.useState('#aaaaaa');
-	const [dataState, setDataState] = React.useState(data);
+	const [dataState, setDataState] = React.useState(data2);
 	const [lastKey, setLastKey] = React.useState('');
 	const handleCorrect = (text: string) => {
-		let guesses = localStorage.getItem('crossword');
-		if (guesses) guesses = JSON.parse(guesses).guesses;
-		console.log(guesses);
-		setDataState(data2);
+		//* Do something here
+		// setDataState(data2);
 	};
 
 	useEffect(() => {
@@ -116,8 +35,12 @@ const Crossword: FC<CrosswordProps> = () => {
 		<div className="grid grid-cols-crossword space w-full h-full">
 			<CrosswordLib
 				onAnswerCorrect={() => handleCorrect('onAnswerCorrect')}
-				onCorrect={() => {}}
-				onCrosswordCorrect={() => {}}
+				onCorrect={() => {
+					console.log('onCorrect');
+				}}
+				onCrosswordCorrect={() => {
+					alert("You've solved the puzzle!");
+				}}
 				onCellChange={(row, col, char) => {
 					if (char) updateRealStorage();
 				}}
@@ -130,7 +53,7 @@ const Crossword: FC<CrosswordProps> = () => {
 					gridBackground: '#54637944',
 					cellBackground: color,
 					numberColor: '#6c70c5',
-					highlightBackground: '#dddddd',
+					highlightBackground: '#dddddd14',
 					focusBackground: '#4444cc',
 					columnBreakpoint: '100px',
 				}}
