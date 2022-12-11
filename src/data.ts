@@ -263,7 +263,7 @@ export const data3: CrosswordType = {
 				completed: false,
 			},
 			5: {
-				clue: 'Slangehviskerens sprog',
+				clue: 'Slangehviskeri',
 				answer: 'PYTHON',
 				row: 6,
 				col: 7,
@@ -277,7 +277,7 @@ export const data3: CrosswordType = {
 				completed: false,
 			},
 			10: {
-				clue: 'What do slay today?',
+				clue: 'What to slay today?',
 				answer: 'GOATS',
 				row: 9,
 				col: 12,
