@@ -12,9 +12,7 @@ import CountDown from './components/Countdown';
 import Crossword from './components/Crossword';
 import MyPage from './components/Crossword';
 import { Answer, CrosswordType as GameState } from './types';
-import { data2, data3 } from './data';
-import { CluesInputOriginal } from '@jaredreisinger/react-crossword/dist/types';
-import Modal from './components/Modal';
+import { data3 } from './data';
 import YoutTubeModal from './components/modals/YoutubeModal';
 import Alert from './components/Alert';
 import WinnerModal from './components/modals/WinnerModal';
@@ -25,7 +23,7 @@ function App() {
 	const [postToDbToggle, setPostToDbToggle] = useState(false);
 	const [timerRunOut, setTimerRunOut] = useState(false);
 	const [showYtModal, setShowYtModal] = useState(false);
-	const [hasWon, setHasWon] = useState(false);
+	const [hasWon, setHasWon] = useState(true);
 	const [isAllowedToCloseModal, setIsAllowedToCloseModal] = useState(false);
 	const [pointerEventOver, setPointerEventOver] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
@@ -151,7 +149,7 @@ function App() {
 				>
 					{currentTimer && gameState && (
 						<div
-							className="flex flex-col items-center mt-24 w-full"
+							className="flex flex-col items-center mt-8 w-full"
 							id="modal-root"
 						>
 							<CountDown
@@ -191,10 +189,10 @@ function App() {
 							>
 								Press Other Button
 							</button>
-							<h1 className="text-secondary text-6xl font-semibold mb-20">
+							<h1 className="text-secondary text-5xl font-semibold mb-10">
 								Sørens Store Krydsord
 							</h1>
-							<div className=" w-full h-fit max-w-[1400px] max-h-[1100px] ">
+							<div className=" w-full h-fit max-w-[1450px] max-h-[1100px] ">
 								{gameState.crossword && (
 									<Crossword
 										onCorrect={(direction, number, answer) =>

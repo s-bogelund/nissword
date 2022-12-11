@@ -1,5 +1,5 @@
 import React, { FC, PointerEvent, useEffect, useMemo } from 'react';
-import { data1, data2 } from '../data';
+import { data1 } from '../data';
 import { Crossword as CrosswordLib } from '@jaredreisinger/react-crossword';
 import {
 	CluesInputOriginal,
@@ -67,7 +67,7 @@ const Crossword: FC<CrosswordProps> = ({ data, onUpdate, onCorrect }) => {
 		<>
 			{data && (
 				<div
-					className="grid grid-cols-crossword space w-full h-full "
+					className="grid grid-cols-crossword space w-full h-full gap-1"
 					onKeyDown={() => updateRealStorage(null)}
 					onPointerMove={e => updateRealStorage(e)}
 				>

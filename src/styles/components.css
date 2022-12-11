@@ -1,9 +1,9 @@
 .clue {
-	@apply !text-primary text-[14px] !rounded-xl py-[1px];
+	@apply !text-primary text-[14px] !rounded-md !flex-wrap px-2 py-[0.2px];
 }
 
 .clues {
-	@apply !w-fit;
+	@apply !w-fit flex-wrap;
 }
 
 rect {

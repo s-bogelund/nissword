@@ -232,13 +232,6 @@ export const data3: CrosswordType = {
 				col: 8,
 				completed: false,
 			},
-			20: {
-				clue: 'Antallet af udviklere i IT Minds der har erfaring med at udvikle til Windows Phone',
-				answer: 'EN',
-				row: 2,
-				col: 8,
-				completed: false,
-			},
 		},
 		down: {
 			1: {
@@ -311,7 +304,13 @@ export const data3: CrosswordType = {
 				col: 4,
 				completed: false,
 			},
-
+			20: {
+				clue: 'Antallet af udviklere i IT Minds der har erfaring med at udvikle til Windows Phone',
+				answer: 'EN',
+				row: 12,
+				col: 15,
+				completed: false,
+			},
 			21: {
 				clue: 'Ubrugelig Pokémon uden ske',
 				answer: 'ABRA',

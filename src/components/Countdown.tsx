@@ -37,12 +37,12 @@ const CountDown: FC<CountDownProps> = ({
 			return;
 		}
 		// TODO: THIS SHOULDN'T BE COMMENTED OUT
-		// const interval = setInterval(() => {
-		// 	setCountDown(prev => prev - 1);
-		// 	if (countDown % 5 === 0) onCounterUpdate(countDown);
-		// }, countDownSpeed);
+		const interval = setInterval(() => {
+			setCountDown(prev => prev - 1);
+			if (countDown % 5 === 0) onCounterUpdate(countDown);
+		}, countDownSpeed);
 
-		// return () => clearInterval(interval);
+		return () => clearInterval(interval);
 	}, [countDown]);
 
 	useEffect(() => {
