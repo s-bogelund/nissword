@@ -17,21 +17,44 @@ import { CluesInputOriginal } from '@jaredreisinger/react-crossword/dist/types';
 import Modal from './components/Modal';
 import YoutTubeModal from './components/modals/YoutubeModal';
 import Alert from './components/Alert';
+import WinnerModal from './components/modals/WinnerModal';
 
 function App() {
 	const [gameState, setGameState] = useState({} as GameState);
 	const [answers, setAnswers] = useState<Answer[]>([]);
 	const [postToDbToggle, setPostToDbToggle] = useState(false);
 	const [timerRunOut, setTimerRunOut] = useState(false);
-	const [showModal, setShowModal] = useState(false);
+	const [showYtModal, setShowYtModal] = useState(false);
+	const [hasWon, setHasWon] = useState(false);
 	const [isAllowedToCloseModal, setIsAllowedToCloseModal] = useState(false);
 	const [pointerEventOver, setPointerEventOver] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
+	const [firstArnoldFound, setFirstArnoldFound] = useState(false);
 	const modalButtonRef = useRef<HTMLButtonElement>(null);
 	const clearLocalStorage = () => {
 		localStorage.clear();
 		window.location.reload();
 	};
+	useEffect(() => {
+		const crosswordFetcher = async () => {
+			let fetchedGameState = await fetchGameState();
+			if (!fetchedGameState) return;
+
+			console.log('fetchedGameState', fetchedGameState);
+			if (!fetchedGameState?.crossword) {
+				console.log('no gamestate, seeding db', fetchedGameState);
+				await seedDb();
+				fetchedGameState = await fetchGameState();
+			}
+			if (!fetchedGameState) return;
+
+			const answers = getAnswers(fetchedGameState);
+			console.log('answers: ', answers);
+			setAnswers(answers);
+			setGameState(fetchedGameState);
+		};
+		crosswordFetcher();
+	}, []);
 
 	useEffect(() => {
 		if (gameState.currentTimer < 575 && gameState.crossword) {
@@ -59,31 +82,11 @@ function App() {
 					completed: true,
 				};
 				setGameState(newGameState);
+				setHasWon(newGameState.completed);
 			}
 			postGameState(gameState);
 		}
 	}, [postToDbToggle]);
-
-	useEffect(() => {
-		const crosswordFetcher = async () => {
-			let fetchedGameState = await fetchGameState();
-			if (!fetchedGameState) return;
-
-			console.log('fetchedGameState', fetchedGameState);
-			if (!fetchedGameState?.crossword) {
-				console.log('no gamestate, seeding db', fetchedGameState);
-				await seedDb();
-				fetchedGameState = await fetchGameState();
-			}
-			if (!fetchedGameState) return;
-
-			const answers = getAnswers(fetchedGameState);
-			console.log('answers: ', answers);
-			setAnswers(answers);
-			setGameState(fetchedGameState);
-		};
-		crosswordFetcher();
-	}, []);
 
 	const updateCrosswordTimer = (timer: number) => {
 		if (!gameState) return;
@@ -95,7 +98,7 @@ function App() {
 	};
 
 	const handlePointerModalLaunch = () => {
-		if (showModal || !timerRunOut || pointerEventOver) return;
+		if (showYtModal || !timerRunOut || pointerEventOver) return;
 
 		// window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
 		setPointerEventOver(true);
@@ -107,9 +110,6 @@ function App() {
 		if (gameState) return gameState.initialTimer;
 		else return 0;
 	}, [gameState.initialTimer]);
-	const handleCrossWordUpdate = (newCrossword: CluesInputOriginal) => {
-		// console.log('newCrossword: ', newCrossword);
-	};
 
 	useEffect(() => {
 		if (!gameState?.crossword) return;
@@ -120,8 +120,8 @@ function App() {
 	}, [answers]);
 
 	const setShowModalAfterSmallDelay = useMemo(() => {
-		if (!showModal) return '!opacity-0';
-		if (showModal) {
+		if (!showYtModal) return '!opacity-0';
+		if (showYtModal) {
 			setTimeout(() => {
 				return '!flex !opacity-0';
 			}, 1000);
@@ -129,15 +129,16 @@ function App() {
 		setTimeout(() => {
 			setIsAllowedToCloseModal(true);
 		}, 10000);
-	}, [showModal, timerRunOut]);
+	}, [showYtModal, timerRunOut]);
 
 	return (
 		<>
 			<YoutTubeModal
 				className={`${setShowModalAfterSmallDelay}`}
-				isOpen={showModal}
-				onClose={() => isAllowedToCloseModal && setShowModal(false)}
+				isOpen={showYtModal}
+				onClose={() => isAllowedToCloseModal && setShowYtModal(false)}
 			/>
+			<WinnerModal isOpen={hasWon} onClose={() => setHasWon(false)} />
 			{currentTimer && gameState && (
 				<div
 					onPointerMove={() => {
@@ -167,7 +168,7 @@ function App() {
 							</button>
 							<button
 								className="btn btn-secondary absolute left-5 top-3 w-14 !max-h-12 text-xs"
-								onClick={() => setShowModal(true)}
+								onClick={() => setShowYtModal(true)}
 								ref={modalButtonRef}
 							>
 								Modal
@@ -199,9 +200,7 @@ function App() {
 										onCorrect={(direction, number, answer) =>
 											updateAnswers(answer)
 										}
-										onUpdate={newCrossword =>
-											handleCrossWordUpdate(newCrossword)
-										}
+										onUpdate={newCrossword => {}}
 										data={crosswordToPass}
 									/>
 								)}
@@ -215,20 +214,32 @@ function App() {
 	);
 
 	function updateAnswers(answer: string) {
-		const answerToUpdate: Answer | undefined = answers.find(
+		let answerToUpdate: Answer[] | undefined = answers.filter(
 			a => a.answer === answer
 		);
-		if (answerToUpdate) {
-			if (answerToUpdate.completed === true) return;
+		console.log('answerToUpdate: ', answerToUpdate);
+
+		if (!answerToUpdate) return;
+		if (answerToUpdate[0].answer === 'ARNOLD') setFirstArnoldFound(true);
+
+		if (answerToUpdate[0].answer === 'ARNOLD' && firstArnoldFound) {
+			if (answerToUpdate[1].completed !== true) {
+				answerToUpdate[1].completed = true;
+				setShowAlert(true);
+			}
+		} else {
+			if (answerToUpdate[0].completed === true) return;
 			setShowAlert(true);
-			answerToUpdate.completed = true;
-			setAnswers([...answers]);
+			answerToUpdate[0].completed = true;
 		}
+		console.log('answerToUpdate 2: ', answerToUpdate);
+
+		setAnswers([...answers]);
 		console.log('answers from updateAnswers: ', answers);
 
 		setTimeout(() => {
 			setShowAlert(false);
-		}, 2400);
+		}, 3000);
 	}
 
 	function allAnswersFound(answers: Answer[]) {

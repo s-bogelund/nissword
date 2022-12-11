@@ -79,7 +79,7 @@ const Crossword: FC<CrosswordProps> = ({ data, onUpdate, onCorrect }) => {
 							onCorrect(direction, number, answer);
 						}}
 						onCrosswordCorrect={() => {
-							alert("You've solved the puzzle!");
+							// alert("You've solved the puzzle!");
 						}}
 						acrossLabel="Horizontal"
 						downLabel="Vertical"

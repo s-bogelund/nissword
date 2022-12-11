@@ -18,16 +18,11 @@ const YoutTubeModal: FC<Dialog> = ({ className, isOpen, onClose, onClick }) => {
 		}
 	}, [isOpen, modalRef]);
 
-	const handleClick = () => {
-		console.log('iframeRef', modalRef.current);
-	};
-
 	return (
 		<Modal
 			className={`!h-fit !w-fit !bg-transparent !p-0 !m-0 !border-none !shadow-none ${className}`}
 			isOpen={isOpen}
 			onClose={onClose}
-			onClick={() => handleClick()}
 		>
 			<iframe
 				ref={modalRef}

@@ -8,6 +8,7 @@ const alertPhrases = [
 	'Godt nok flot min ven',
 	'Det var da en god gætter',
 	'Du ved da også alting altså',
+	'Aah, der må have været lidt held inden over der',
 ];
 
 const Alert: FC<AlertProps> = ({}) => {
@@ -31,7 +32,7 @@ const Alert: FC<AlertProps> = ({}) => {
 					<span>
 						{
 							alertPhrases[
-								Math.floor(Math.random() * (alertPhrases.length - 1))
+								Math.round(Math.random() * (alertPhrases.length - 1))
 							]
 						}
 					</span>
