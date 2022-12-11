@@ -1,22 +1,32 @@
-import { Answer, CrosswordType } from './types';
-
+import {
+	Across,
+	Answer,
+	CrosswordElements,
+	CrosswordType,
+	MyClueType,
+} from './types';
+import SimpleCrypto from 'simple-crypto-js';
 const BASE_API_URL = 'https://nissdb.herokuapp.com/api';
-const LOCAL_API_URL = 'http://localhost:4000/';
-const LOCAL_API_URL2 = 'http://localhost:1337/';
-const TOKEN =
-	'3bc5a3f92ce5c8c5fbab45b7594d79726093be921b66972842e4f244e044216bdad5834111323a0d9d001aafc03e35ce34e9c5c5b86aee9d8c01a18f4a0127f460718c5b4597ee8452d11015f7832403bdc5239c68143e89ee26e1b9e8ea9e71fdaa640324ac4fe6049cf45e87f8a8ae6f6d41addc1283b6fb635e7099293400';
+
+export const ENCRYPTION_KEY = 'phantom_menace_bad';
+var simple = new SimpleCrypto(ENCRYPTION_KEY);
+
 export const fetchData = async (url: string) => {
 	const response = await fetch(url);
 	return response.json();
 };
 
 export const fetchGameState = async () => {
-	const data: CrosswordType = await fetchData(`${BASE_API_URL}/crossword`);
-	if (data) return data;
+	const data = await fetchData(`${BASE_API_URL}/crossword`);
+	if (!data) return false;
+
+	const decrypted = decryptCrossword(data);
+	return decrypted as CrosswordType;
 };
 
-export const postGameState = async (context: CrosswordType) => {
-	console.log('post:', context);
+export const postGameState = async (gameState: CrosswordType) => {
+	// encrypt every answer in the crossword
+	const encrypted = encryptCrossword(gameState);
 
 	const response = await fetch(`${BASE_API_URL}/crossword`, {
 		method: 'POST',
@@ -24,7 +34,7 @@ export const postGameState = async (context: CrosswordType) => {
 			'Content-Type': 'application/json',
 			'Access-Control-Allow-Origin': '*', // Required for CORS support to work
 		},
-		body: JSON.stringify(context),
+		body: JSON.stringify(encrypted),
 	});
 	console.log('post response:', response.status);
 	if (!response.ok) return;
@@ -64,3 +74,60 @@ export const getAnswersAndCompleted = (crossword: CrosswordType): Answer[] => {
 	];
 	return answers;
 };
+
+function encryptCrossword(crossword: CrosswordType) {
+	if (!crossword.crossword) return crossword;
+	const encryptedAcross = Object.values(crossword.crossword.across).map(
+		clue => {
+			return {
+				...clue,
+				answer: simple.encrypt(clue.answer),
+			};
+		}
+	);
+	const encryptedDown = Object.values(crossword.crossword.down).map(clue => {
+		return {
+			...clue,
+			answer: simple.encrypt(clue.answer),
+		};
+	});
+
+	// encrypt the whole crossword
+	const encrypted = {
+		...crossword,
+		crossword: {
+			across: encryptedAcross,
+			down: encryptedDown,
+		},
+	};
+	return encrypted;
+}
+
+function decryptCrossword(crossword: CrosswordType): CrosswordType {
+	if (!crossword.crossword) return crossword;
+	const decryptedAcross = Object.values(crossword.crossword.across).map(
+		clue => {
+			return {
+				...clue,
+				answer: simple.decrypt(clue.answer) as string,
+			};
+		}
+	);
+	const decryptedDown = Object.values(crossword.crossword.down).map(clue => {
+		return {
+			...clue,
+			answer: simple.decrypt(clue.answer) as string,
+		};
+	});
+
+	// decrypt the whole crossword
+	const decrypted = {
+		...crossword,
+		crossword: {
+			across: decryptedAcross,
+			down: decryptedDown,
+		},
+	};
+	// @ts-ignore
+	return decrypted;
+}

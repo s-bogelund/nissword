@@ -5,6 +5,7 @@ import {
 	getAnswersAndCompleted,
 	postGameState,
 } from './api';
+import SimpleCrypto from 'simple-crypto-js';
 import reactLogo from './assets/react.svg';
 import CountDown from './Countdown';
 import Crossword from './Crossword';
@@ -37,15 +38,15 @@ function App() {
 	useEffect(() => {
 		const crosswordFetcher = async () => {
 			let fetchedGameState = await fetchGameState();
+			if (!fetchedGameState) return;
+
 			console.log('fetchedGameState', fetchedGameState);
 			if (!fetchedGameState?.crossword) {
-				console.log('no gamestate, seeding db');
+				console.log('no gamestate, seeding db', fetchedGameState);
 				await seedDb();
 				fetchedGameState = await fetchGameState();
 			}
-			if (!fetchedGameState?.crossword) {
-				return;
-			}
+			if (!fetchedGameState) return;
 
 			const answers = getAnswersAndCompleted(fetchedGameState);
 			console.log('answers: ', answers);
@@ -54,13 +55,6 @@ function App() {
 		};
 		crosswordFetcher();
 	}, []);
-
-	useEffect(() => {
-		if (gameState) {
-			console.log('updating gameState ', gameState);
-			// postGameState(gameState);
-		}
-	}, [gameState?.crossword?.across, gameState?.crossword?.down]);
 
 	const updateCrosswordTimer = (timer: number) => {
 		if (!gameState) return;

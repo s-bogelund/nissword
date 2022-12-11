@@ -16,9 +16,12 @@ export type CrosswordElements = {
 	down: Record<string, MyClueType>;
 };
 
-type MyClueType = {
+export type MyClueType = {
 	completed: boolean;
 } & ClueTypeOriginal;
+
+export type Across = Record<string, MyClueType>;
+export type Down = Record<string, MyClueType>;
 
 export type Answer = {
 	answer: string;
