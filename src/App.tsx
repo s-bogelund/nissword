@@ -4,6 +4,7 @@ import {
 	getAnswers,
 	getAnswersAndCompleted,
 	postGameState,
+	updateCrosswordFromAnswers,
 } from './api';
 import SimpleCrypto from 'simple-crypto-js';
 import reactLogo from './assets/react.svg';
@@ -18,6 +19,7 @@ function App() {
 	// const [countDownColor, setCountDownColor] = useState('text-slate-100');
 	const [gameState, setGameState] = useState({} as GameState);
 	const [answers, setAnswers] = useState<Answer[]>([]);
+	const [postToDbToggle, setPostToDbToggle] = useState(false);
 	// const [crossword, setCrossword] = useState({} as CluesInputOriginal);
 	const clearLocalStorage = () => {
 		localStorage.clear();
@@ -25,7 +27,8 @@ function App() {
 	};
 
 	useEffect(() => {
-		if (gameState.currentTimer < 575) {
+		if (gameState.currentTimer < 575 && gameState.crossword) {
+			console.log('posting state to db', gameState);
 			postGameState(gameState);
 		}
 	}, [gameState.currentTimer]);
@@ -34,6 +37,13 @@ function App() {
 		const response = await postGameState(data2);
 		console.log(response);
 	}
+
+	useEffect(() => {
+		if (gameState.crossword) {
+			console.log('posting state to db', gameState);
+			postGameState(gameState);
+		}
+	}, [postToDbToggle]);
 
 	useEffect(() => {
 		const crosswordFetcher = async () => {
@@ -48,7 +58,7 @@ function App() {
 			}
 			if (!fetchedGameState) return;
 
-			const answers = getAnswersAndCompleted(fetchedGameState);
+			const answers = getAnswers(fetchedGameState);
 			console.log('answers: ', answers);
 			setAnswers(answers);
 			setGameState(fetchedGameState);
@@ -70,58 +80,95 @@ function App() {
 	const initialTimer = useMemo(() => {
 		if (gameState) return gameState.initialTimer;
 		else return 0;
-	}, [gameState]);
+	}, [gameState.initialTimer]);
 	const handleCrossWordUpdate = (newCrossword: CluesInputOriginal) => {
-		console.log('newCrossword: ', newCrossword);
+		// console.log('newCrossword: ', newCrossword);
 	};
 
-	const handleCorrect = (direction: string, number: string, answer: string) => {
+	const handleCorrect = (
+		direction: string,
+		number: string,
+		answerString: string
+	) => {
 		// set correct to true on the correct answer
-		console.log('correct: ', direction, number, answer);
+		console.log('correct: ', direction, number, answerString);
 		if (!gameState?.crossword) return;
-		if ((direction = 'across')) {
-			const newState = {
-				...gameState,
-				crossword: {
-					...gameState.crossword,
-					across: {
-						...gameState.crossword.across,
-						[number]: {
-							...gameState.crossword.across[number],
-							completed: true,
-						},
-					},
-				},
-			};
+		// if ((direction = 'across')) {
+		// 	const newState = {
+		// 		...gameState,
+		// 		crossword: {
+		// 			...gameState.crossword,
+		// 			across: {
+		// 				...gameState.crossword.across,
+		// 				[number]: {
+		// 					...gameState.crossword.across[number],
+		// 					completed: true,
+		// 				},
+		// 			},
+		// 		},
+		// 	};
 
-			setGameState(newState);
-		}
-		if ((direction = 'down')) {
-			const newState = {
-				...gameState,
-				crossword: {
-					...gameState.crossword,
-					down: {
-						...gameState.crossword.down,
-						[number]: {
-							...gameState.crossword.down[number],
-							completed: true,
-						},
-					},
-				},
-			};
-			setGameState(newState);
-		}
+		// 	setGameState(newState);
+		// }
+		// if ((direction = 'down')) {
+		// 	const newState = {
+		// 		...gameState,
+		// 		crossword: {
+		// 			...gameState.crossword,
+		// 			down: {
+		// 				...gameState.crossword.down,
+		// 				[number]: {
+		// 					...gameState.crossword.down[number],
+		// 					completed: true,
+		// 				},
+		// 			},
+		// 		},
+		// 	};
+
+		// 	setGameState(newState);
+		// }
 
 		// find answer in answers and set correct to true
-		const answerToUpdate: Answer | undefined = answers.find(
-			a => a.answer === answer
-		);
-		if (answerToUpdate) {
-			answerToUpdate.completed = true;
-			setAnswers([...answers]);
-		}
+		updateAnswers(answerString);
+		updateCrosswordFromAnswers(gameState, answers);
+		// updateGameStateFromAnswers(answers, Number(number));
+
+		console.log('gameState across', gameState.crossword.across);
 	};
+
+	useEffect(() => {
+		if (!gameState?.crossword) return;
+		const newState = updateCrosswordFromAnswers(gameState, answers);
+		console.log('newState', newState);
+
+		setGameState(newState);
+		setPostToDbToggle(prev => !prev);
+	}, [answers]);
+
+	// const updateGameStateFromAnswers = (answers: Answer[], number: number) => {
+	// 	if (!gameState?.crossword) return;
+	// 	const updatedGameState = {
+	// 		...gameState,
+	// 		crossword: {
+	// 			...gameState.crossword,
+	// 			across: {
+	// 				...gameState.crossword.across,
+	// 			},
+	// 			down: {
+	// 				...gameState.crossword.down,
+	// 			},
+	// 		},
+	// 	};
+	// 	answers.forEach(answer => {
+	// 		if (answer.direction === 'across') {
+	// 			updatedGameState.crossword.across[answer.number].completed = true;
+	// 		}
+	// 		if (answer.direction === 'down') {
+	// 			updatedGameState.crossword.down[answer.number].completed = true;
+	// 		}
+	// 	});
+	// 	setGameState(updatedGameState);
+	// };
 
 	return (
 		<>
@@ -178,6 +225,16 @@ function App() {
 			)
 		</>
 	);
+
+	function updateAnswers(answer: string) {
+		const answerToUpdate: Answer | undefined = answers.find(
+			a => a.answer === answer
+		);
+		if (answerToUpdate) {
+			answerToUpdate.completed = true;
+			setAnswers([...answers]);
+		}
+	}
 }
 
 export default App;

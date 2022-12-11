@@ -6,7 +6,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { postGameState } from './api';
 
 type CountDownProps = {
 	currentTimer: number;
@@ -85,19 +84,27 @@ const CountDown: FC<CountDownProps> = ({
 	// </span>
 	return (
 		<div className="absolute flex flex-col items-center right-12 top-12 w-24">
-			<h1 className={`text-4xl font-semibold mb-2 ${countDownColor}`}>
+			<div
+				className={`flex justify-between w-20 text-4xl font-semibold mb-2 ${countDownColor}`}
+			>
 				{minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-			</h1>
+			</div>
 			<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
 				{Math.round(countDownSpeed)}
 			</h1>
-			<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
+			{/* <h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
 				{testMinutes}:{testSeconds < 10 ? `0${testSeconds}` : testSeconds}
-			</h1>
+			</h1> */}
 		</div>
 	);
 
 	function handleReloadMultiplier(): number {
+		console.log(
+			'handleReloadMultiplier -> currentTimer',
+			currentTimer,
+			initialTimer
+		);
+
 		if (currentTimer > 0.9 * initialTimer) return 9.4;
 		else if (currentTimer > 0.8 * initialTimer) return 9;
 		else if (currentTimer > 0.7 * initialTimer) return 8.5;
@@ -107,7 +114,7 @@ const CountDown: FC<CountDownProps> = ({
 		else if (currentTimer > 0.3 * initialTimer) return 6.5;
 		else if (currentTimer > 0.2 * initialTimer) return 6;
 		else if (currentTimer > 0.1 * initialTimer) return 5.5;
-		else return 10;
+		else return 5;
 	}
 };
 

@@ -49,7 +49,7 @@ export const data2: CrosswordType = {
 				answer: 'DEVOPS',
 				row: 5,
 				col: 7,
-				completed: false,
+				completed: true,
 			},
 			7: {
 				clue: 'Hvad kan og vil en svane brække?',

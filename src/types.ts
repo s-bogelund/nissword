@@ -3,6 +3,7 @@ import {
 	ClueTypeOriginal,
 	Direction,
 } from '@jaredreisinger/react-crossword/dist/types';
+import SimpleCrypto from 'simple-crypto-js';
 
 export type CrosswordType = {
 	currentTimer: number;
@@ -11,9 +12,21 @@ export type CrosswordType = {
 	crossword: CrosswordElements;
 };
 
+export type EncryptedCrosswordType = {
+	currentTimer: number;
+	initialTimer: number;
+	completed: boolean;
+	crossword: EncryptedCrosswordElements;
+};
+
 export type CrosswordElements = {
 	across: Record<string, MyClueType>;
 	down: Record<string, MyClueType>;
+};
+
+export type EncryptedCrosswordElements = {
+	across: string;
+	down: string;
 };
 
 export type MyClueType = {
