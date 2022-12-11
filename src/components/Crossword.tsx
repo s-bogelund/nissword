@@ -1,12 +1,12 @@
 import React, { FC, PointerEvent, useEffect, useMemo } from 'react';
-import { data1, data2 } from './data';
+import { data1, data2 } from '../data';
 import { Crossword as CrosswordLib } from '@jaredreisinger/react-crossword';
 import {
 	CluesInputOriginal,
 	ClueTypeOriginal,
 	Direction,
 } from '@jaredreisinger/react-crossword/dist/types';
-import { postGameState } from './api';
+import { postGameState } from '../api';
 
 type CrosswordProps = {
 	data: CluesInputOriginal;
@@ -44,11 +44,30 @@ const Crossword: FC<CrosswordProps> = ({ data, onUpdate, onCorrect }) => {
 		updateFromRealStorage();
 	}, []);
 
+	const slightlyBrighter = (color: string) => {
+		const hex = color.replace('#', '');
+		const r = parseInt(hex.substring(0, 2), 16);
+		const g = parseInt(hex.substring(2, 4), 16);
+		const b = parseInt(hex.substring(4, 6), 16);
+
+		const r2 = Math.min(255, r + 20);
+		const g2 = Math.min(255, g + 20);
+		const b2 = Math.min(255, b + 20);
+
+		const newColor =
+			'#' +
+			('0' + r2.toString(16)).slice(-2) +
+			('0' + g2.toString(16)).slice(-2) +
+			('0' + b2.toString(16)).slice(-2);
+
+		return newColor;
+	};
+
 	return (
 		<>
 			{data && (
 				<div
-					className="grid grid-cols-crossword space w-full h-full"
+					className="grid grid-cols-crossword space w-full h-full "
 					onKeyDown={() => updateRealStorage(null)}
 					onPointerMove={e => updateRealStorage(e)}
 				>
@@ -69,11 +88,10 @@ const Crossword: FC<CrosswordProps> = ({ data, onUpdate, onCorrect }) => {
 						useStorage={true}
 						theme={{
 							gridBackground: 'transparent',
-							// gridBackground: '#54637944',
-							cellBackground: color,
+							focusBackground: '#f5f5d020',
+							cellBackground: '#8a85ff',
 							numberColor: '#6c70c5',
-							highlightBackground: '#dddddd14',
-							focusBackground: '#4444cc',
+							highlightBackground: slightlyBrighter('#274071'),
 							columnBreakpoint: '100px',
 						}}
 					/>

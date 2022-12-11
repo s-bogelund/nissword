@@ -11,12 +11,14 @@ type CountDownProps = {
 	currentTimer: number;
 	initialTimer: number;
 	onCounterUpdate: (count: number) => void;
+	onCounterEnd: () => void;
 };
 
 const CountDown: FC<CountDownProps> = ({
 	currentTimer,
 	initialTimer,
 	onCounterUpdate,
+	onCounterEnd,
 }) => {
 	const [countDown, setCountDown] = useState(currentTimer);
 	const [testCountDown, setTestCountDown] = useState(currentTimer);
@@ -30,13 +32,17 @@ const CountDown: FC<CountDownProps> = ({
 	const testSeconds = testCountDown % 60;
 
 	useEffect(() => {
-		if (countDown === 0) return;
-		const interval = setInterval(() => {
-			setCountDown(prev => prev - 1);
-			if (countDown % 5 === 0) onCounterUpdate(countDown);
-		}, countDownSpeed);
+		if (countDown === 0) {
+			onCounterEnd();
+			return;
+		}
+		// TODO: THIS SHOULDN'T BE COMMENTED OUT
+		// const interval = setInterval(() => {
+		// 	setCountDown(prev => prev - 1);
+		// 	if (countDown % 5 === 0) onCounterUpdate(countDown);
+		// }, countDownSpeed);
 
-		return () => clearInterval(interval);
+		// return () => clearInterval(interval);
 	}, [countDown]);
 
 	useEffect(() => {

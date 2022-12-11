@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
 	fetchGameState,
 	getAnswers,
@@ -8,19 +8,26 @@ import {
 } from './api';
 import SimpleCrypto from 'simple-crypto-js';
 import reactLogo from './assets/react.svg';
-import CountDown from './Countdown';
-import Crossword from './Crossword';
-import MyPage from './Crossword';
+import CountDown from './components/Countdown';
+import Crossword from './components/Crossword';
+import MyPage from './components/Crossword';
 import { Answer, CrosswordType as GameState } from './types';
-import { data2 } from './data';
+import { data2, data3 } from './data';
 import { CluesInputOriginal } from '@jaredreisinger/react-crossword/dist/types';
+import Modal from './components/Modal';
+import YoutTubeModal from './components/modals/YoutubeModal';
+import Alert from './components/Alert';
 
 function App() {
-	// const [countDownColor, setCountDownColor] = useState('text-slate-100');
 	const [gameState, setGameState] = useState({} as GameState);
 	const [answers, setAnswers] = useState<Answer[]>([]);
 	const [postToDbToggle, setPostToDbToggle] = useState(false);
-	// const [crossword, setCrossword] = useState({} as CluesInputOriginal);
+	const [timerRunOut, setTimerRunOut] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const [isAllowedToCloseModal, setIsAllowedToCloseModal] = useState(false);
+	const [pointerEventOver, setPointerEventOver] = useState(false);
+	const [showAlert, setShowAlert] = useState(false);
+	const modalButtonRef = useRef<HTMLButtonElement>(null);
 	const clearLocalStorage = () => {
 		localStorage.clear();
 		window.location.reload();
@@ -31,16 +38,28 @@ function App() {
 			console.log('posting state to db', gameState);
 			postGameState(gameState);
 		}
-	}, [gameState.currentTimer]);
+
+		if (timerRunOut) {
+			postGameState(gameState);
+			// window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+		}
+	}, [gameState.currentTimer, timerRunOut]);
 
 	async function seedDb() {
-		const response = await postGameState(data2);
+		const response = await postGameState(data3);
 		console.log(response);
 	}
 
 	useEffect(() => {
 		if (gameState.crossword) {
 			console.log('posting state to db', gameState);
+			if (allAnswersFound(answers)) {
+				const newGameState = {
+					...gameState,
+					completed: true,
+				};
+				setGameState(newGameState);
+			}
 			postGameState(gameState);
 		}
 	}, [postToDbToggle]);
@@ -75,6 +94,13 @@ function App() {
 		setGameState(updatedCrossword);
 	};
 
+	const handlePointerModalLaunch = () => {
+		if (showModal || !timerRunOut || pointerEventOver) return;
+
+		// window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+		setPointerEventOver(true);
+	};
+
 	const currentTimer = gameState?.currentTimer;
 	const crosswordToPass = gameState?.crossword;
 	const initialTimer = useMemo(() => {
@@ -85,101 +111,50 @@ function App() {
 		// console.log('newCrossword: ', newCrossword);
 	};
 
-	const handleCorrect = (
-		direction: string,
-		number: string,
-		answerString: string
-	) => {
-		// set correct to true on the correct answer
-		console.log('correct: ', direction, number, answerString);
-		if (!gameState?.crossword) return;
-		// if ((direction = 'across')) {
-		// 	const newState = {
-		// 		...gameState,
-		// 		crossword: {
-		// 			...gameState.crossword,
-		// 			across: {
-		// 				...gameState.crossword.across,
-		// 				[number]: {
-		// 					...gameState.crossword.across[number],
-		// 					completed: true,
-		// 				},
-		// 			},
-		// 		},
-		// 	};
-
-		// 	setGameState(newState);
-		// }
-		// if ((direction = 'down')) {
-		// 	const newState = {
-		// 		...gameState,
-		// 		crossword: {
-		// 			...gameState.crossword,
-		// 			down: {
-		// 				...gameState.crossword.down,
-		// 				[number]: {
-		// 					...gameState.crossword.down[number],
-		// 					completed: true,
-		// 				},
-		// 			},
-		// 		},
-		// 	};
-
-		// 	setGameState(newState);
-		// }
-
-		// find answer in answers and set correct to true
-		updateAnswers(answerString);
-		updateCrosswordFromAnswers(gameState, answers);
-		// updateGameStateFromAnswers(answers, Number(number));
-
-		console.log('gameState across', gameState.crossword.across);
-	};
-
 	useEffect(() => {
 		if (!gameState?.crossword) return;
 		const newState = updateCrosswordFromAnswers(gameState, answers);
-		console.log('newState', newState);
 
 		setGameState(newState);
 		setPostToDbToggle(prev => !prev);
 	}, [answers]);
 
-	// const updateGameStateFromAnswers = (answers: Answer[], number: number) => {
-	// 	if (!gameState?.crossword) return;
-	// 	const updatedGameState = {
-	// 		...gameState,
-	// 		crossword: {
-	// 			...gameState.crossword,
-	// 			across: {
-	// 				...gameState.crossword.across,
-	// 			},
-	// 			down: {
-	// 				...gameState.crossword.down,
-	// 			},
-	// 		},
-	// 	};
-	// 	answers.forEach(answer => {
-	// 		if (answer.direction === 'across') {
-	// 			updatedGameState.crossword.across[answer.number].completed = true;
-	// 		}
-	// 		if (answer.direction === 'down') {
-	// 			updatedGameState.crossword.down[answer.number].completed = true;
-	// 		}
-	// 	});
-	// 	setGameState(updatedGameState);
-	// };
+	const setShowModalAfterSmallDelay = useMemo(() => {
+		if (!showModal) return '!opacity-0';
+		if (showModal) {
+			setTimeout(() => {
+				return '!flex !opacity-0';
+			}, 1000);
+		}
+		setTimeout(() => {
+			setIsAllowedToCloseModal(true);
+		}, 10000);
+	}, [showModal, timerRunOut]);
 
 	return (
 		<>
+			<YoutTubeModal
+				className={`${setShowModalAfterSmallDelay}`}
+				isOpen={showModal}
+				onClose={() => isAllowedToCloseModal && setShowModal(false)}
+			/>
 			{currentTimer && gameState && (
 				<div
+					onPointerMove={() => {
+						// handlePointerModalLaunch();
+					}}
+					// onKeyDown={() => handlePointerModalLaunch()}
+					onClick={() => handlePointerModalLaunch()}
 					data-theme="night"
-					className="flex flex-col items-center relative min-h-[100vh] w-[100vw]"
+					className="flex flex-col relative items-center min-h-[100vh] w-[100vw]"
 				>
 					{currentTimer && gameState && (
-						<div className="flex flex-col items-center mt-24 w-full">
+						<div
+							className="flex flex-col items-center mt-24 w-full"
+							id="modal-root"
+						>
 							<CountDown
+								onCounterEnd={() => setTimerRunOut(true)}
 								onCounterUpdate={timer => updateCrosswordTimer(timer)}
 								currentTimer={currentTimer}
 								initialTimer={initialTimer}
@@ -191,25 +166,38 @@ function App() {
 								Clear Localstorage
 							</button>
 							<button
-								className="btn btn-secondary absolute left-5 top-3"
-								// onClick={() => crosswordFetcher()}
+								className="btn btn-secondary absolute left-5 top-3 w-14 !max-h-12 text-xs"
+								onClick={() => setShowModal(true)}
+								ref={modalButtonRef}
 							>
-								Get Data
+								Modal
 							</button>
+
 							<button
 								className="btn btn-secondary absolute left-5 top-15"
 								onClick={() => seedDb()}
 							>
 								Seed Data Base
 							</button>
+							<button
+								className="btn btn-secondary absolute left-5 bottom-10"
+								onClick={() =>
+									window.open(
+										'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+										'_blank'
+									)
+								}
+							>
+								Press Other Button
+							</button>
 							<h1 className="text-secondary text-6xl font-semibold mb-20">
 								Sørens Store Krydsord
 							</h1>
-							<div className="justify-center text-lg text-secondary md:w-full w-[900px] h-[500px] max-w-[1000px] max-h-[1000px] ">
+							<div className=" w-full h-fit max-w-[1400px] max-h-[1100px] ">
 								{gameState.crossword && (
 									<Crossword
 										onCorrect={(direction, number, answer) =>
-											handleCorrect(direction, number, answer)
+											updateAnswers(answer)
 										}
 										onUpdate={newCrossword =>
 											handleCrossWordUpdate(newCrossword)
@@ -220,9 +208,9 @@ function App() {
 							</div>
 						</div>
 					)}
+					{showAlert && <Alert />}
 				</div>
 			)}
-			)
 		</>
 	);
 
@@ -231,9 +219,20 @@ function App() {
 			a => a.answer === answer
 		);
 		if (answerToUpdate) {
+			if (answerToUpdate.completed === true) return;
+			setShowAlert(true);
 			answerToUpdate.completed = true;
 			setAnswers([...answers]);
 		}
+		console.log('answers from updateAnswers: ', answers);
+
+		setTimeout(() => {
+			setShowAlert(false);
+		}, 2400);
+	}
+
+	function allAnswersFound(answers: Answer[]) {
+		return answers.every(a => a.completed);
 	}
 }
 
