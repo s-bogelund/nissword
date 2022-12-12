@@ -123,7 +123,7 @@ export const updateCrosswordFromAnswers = (
 	const updatedCrossword = { ...crossword };
 	answers.forEach(answer => {
 		const clue = getClueFromAnswer(crossword, answer.answer);
-		if (clue) {
+		if (clue && Array.isArray(clue)) {
 			clue.completed = answer.completed;
 		}
 	});
@@ -137,6 +137,16 @@ function getClueFromAnswer(crossword: CrosswordType, answer: string) {
 	const down = Object.values(crossword.crossword.down).find(
 		clue => clue.answer === answer
 	);
+
+	const allAnswersThatAreArnold = [
+		Object.values(crossword.crossword.across).find(
+			clue => clue.answer === 'Arnold'
+		),
+		Object.values(crossword.crossword.down).find(
+			clue => clue.answer === 'Arnold'
+		),
+	];
+
 	return across || down;
 }
 

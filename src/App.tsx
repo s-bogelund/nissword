@@ -23,7 +23,7 @@ function App() {
 	const [postToDbToggle, setPostToDbToggle] = useState(false);
 	const [timerRunOut, setTimerRunOut] = useState(false);
 	const [showYtModal, setShowYtModal] = useState(false);
-	const [hasWon, setHasWon] = useState(true);
+	const [hasWon, setHasWon] = useState(false);
 	const [isAllowedToCloseModal, setIsAllowedToCloseModal] = useState(false);
 	const [pointerEventOver, setPointerEventOver] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
@@ -40,8 +40,8 @@ function App() {
 
 			console.log('fetchedGameState', fetchedGameState);
 			if (!fetchedGameState?.crossword) {
-				console.log('no gamestate, seeding db', fetchedGameState);
 				await seedDb();
+				console.log('no gamestate, seeding db', fetchedGameState);
 				fetchedGameState = await fetchGameState();
 			}
 			if (!fetchedGameState) return;
@@ -203,9 +203,9 @@ function App() {
 									/>
 								)}
 							</div>
+							{showAlert && <Alert />}
 						</div>
 					)}
-					{showAlert && <Alert />}
 				</div>
 			)}
 		</>
