@@ -164,8 +164,9 @@ export const data1: CluesInputOriginal = {
 
 // same data but every column is 2 higher
 export const data3: CrosswordType = {
-	currentTimer: 600,
-	initialTimer: 600,
+	currentTimer: 900,
+	initialTimer: 900,
+	shouldSorenBeTryingToCheat: 'no! stop!',
 	completed: false,
 	crossword: {
 		across: {
@@ -232,6 +233,13 @@ export const data3: CrosswordType = {
 				col: 8,
 				completed: false,
 			},
+			24: {
+				clue: 'Hvilket dyr har lyden der kommer, hvis du taster "GRYNT" og giver bælgfrugter, når den ikke kan mere?',
+				answer: 'HVALROS',
+				row: 1,
+				col: 5,
+				completed: false,
+			},
 		},
 		down: {
 			1: {
@@ -291,7 +299,7 @@ export const data3: CrosswordType = {
 				completed: false,
 			},
 			16: {
-				clue: 'Skal oftest ikke vare ved for evigt',
+				clue: 'Skal oftest ikke vare ved for evigt i programmering',
 				answer: 'LOOP',
 				row: 4,
 				col: 12,
@@ -316,6 +324,20 @@ export const data3: CrosswordType = {
 				answer: 'ABRA',
 				row: 7,
 				col: 14,
+				completed: false,
+			},
+			22: {
+				clue: 'Hvad får man ikke noget af på kontoret, når der spilles autopets?',
+				answer: 'RO',
+				row: 0,
+				col: 10,
+				completed: false,
+			},
+			23: {
+				clue: 'Et nanosekund',
+				answer: 'NS',
+				row: 0,
+				col: 11,
 				completed: false,
 			},
 		},

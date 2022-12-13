@@ -14,7 +14,7 @@ const alertPhrases = [
 const Alert: FC<AlertProps> = ({}) => {
 	return (
 		<>
-			<div className="alert alert-success shadow-lg w-fit">
+			<div className="alert alert-success shadow-lg w-fit absolute bottom-28">
 				<div>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

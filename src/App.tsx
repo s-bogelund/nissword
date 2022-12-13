@@ -23,12 +23,15 @@ function App() {
 	const [postToDbToggle, setPostToDbToggle] = useState(false);
 	const [timerRunOut, setTimerRunOut] = useState(false);
 	const [showYtModal, setShowYtModal] = useState(false);
-	const [hasWon, setHasWon] = useState(true);
+	const [hasWon, setHasWon] = useState(false);
 	const [isAllowedToCloseModal, setIsAllowedToCloseModal] = useState(false);
 	const [pointerEventOver, setPointerEventOver] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
 	const [firstArnoldFound, setFirstArnoldFound] = useState(false);
 	const modalButtonRef = useRef<HTMLButtonElement>(null);
+	const [keyPressed, setKeyPressed] = useState([] as string[]);
+	const audio = new Audio('src/assets/grunt1.mp3');
+
 	const clearLocalStorage = () => {
 		localStorage.clear();
 		window.location.reload();
@@ -52,6 +55,23 @@ function App() {
 			setGameState(fetchedGameState);
 		};
 		crosswordFetcher();
+	}, []);
+
+	useEffect(() => {
+		document.addEventListener('keydown', e => {
+			e.preventDefault();
+
+			if (e.key === keyPressed[keyPressed.length - 1]) return;
+
+			keyPressed.push(e.key);
+
+			keyPressed.splice(-6, keyPressed.length - 5);
+			console.log('keyPressed', keyPressed);
+
+			if (keyPressed.join('').toUpperCase() === 'GRYNT') {
+				audio.play();
+			}
+		});
 	}, []);
 
 	useEffect(() => {
@@ -93,6 +113,14 @@ function App() {
 			currentTimer: timer,
 		};
 		setGameState(updatedCrossword);
+	};
+
+	const listenForAudio = (e: any) => {
+		// if L and Y and D are all pressed, play audio
+		if (e.key === 'L' && e.key === 'Y' && e.key === 'D') {
+			console.log('audio', audio);
+			audio.play();
+		}
 	};
 
 	const handlePointerModalLaunch = () => {
@@ -142,7 +170,7 @@ function App() {
 					onPointerMove={() => {
 						// handlePointerModalLaunch();
 					}}
-					// onKeyDown={() => handlePointerModalLaunch()}
+					onKeyDown={() => listenForAudio((e: any) => listenForAudio(e))}
 					onClick={() => handlePointerModalLaunch()}
 					data-theme="night"
 					className="flex flex-col relative items-center min-h-[100vh] w-[100vw]"
@@ -190,11 +218,12 @@ function App() {
 								Press Other Button
 							</button>
 							<h1 className="text-secondary text-5xl font-semibold mb-10">
-								Sørens Store Krydsord
+								Sørens Store Krydsord Om Alting
 							</h1>
 							<div className=" w-full h-fit max-w-[1450px] max-h-[1100px] ">
 								{gameState.crossword && (
 									<Crossword
+										triedToCheat={() => setShowYtModal(true)}
 										onCorrect={(direction, number, answer) =>
 											updateAnswers(answer)
 										}

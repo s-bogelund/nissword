@@ -21,9 +21,10 @@ export const fetchData = async (url: string) => {
 export const fetchGameState = async () => {
 	const data = await fetchData(`${BASE_API_URL}/crossword`);
 	if (!data) return false;
+	console.log(data);
 
 	const decrypted = decryptCrossword(data);
-	// console.log('decrypted', decrypted);
+	console.log('decrypted', decrypted);
 
 	return decrypted as CrosswordType;
 };
@@ -171,5 +172,6 @@ function decryptCrossword(
 		} as CrosswordElements,
 	};
 
+	//@ts-ignore
 	return decrypted;
 }

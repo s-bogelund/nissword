@@ -12,9 +12,15 @@ type CrosswordProps = {
 	data: CluesInputOriginal;
 	onUpdate: (data: CluesInputOriginal) => void;
 	onCorrect: (direction: Direction, num: string, answer: string) => void;
+	triedToCheat: () => void;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-const Crossword: FC<CrosswordProps> = ({ data, onUpdate, onCorrect }) => {
+const Crossword: FC<CrosswordProps> = ({
+	data,
+	onUpdate,
+	onCorrect,
+	triedToCheat,
+}) => {
 	const [color, setColor] = React.useState('#aaaaaa');
 	const [dataState, setDataState] = React.useState(data);
 	const [lastKey, setLastKey] = React.useState('');
@@ -35,8 +41,10 @@ const Crossword: FC<CrosswordProps> = ({ data, onUpdate, onCorrect }) => {
 			localStorage.setItem('crosswordSolved', 'false');
 		}
 		if (solved === 'true') {
-			alert('Nåå, der troede du lige, at du var smart, hva?');
+			// alert('Nåå, der troede du lige, at du var smart, hva?');
+			triedToCheat();
 			localStorage.setItem('crosswordSolved', 'false');
+			localStorage.setItem('ErSørenDum?', 'Ja');
 		}
 		if (!epicPassword) {
 			localStorage.setItem('epicPassword', 'ISwan');

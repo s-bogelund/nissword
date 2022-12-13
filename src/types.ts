@@ -8,6 +8,7 @@ import SimpleCrypto from 'simple-crypto-js';
 export type CrosswordType = {
 	currentTimer: number;
 	initialTimer: number;
+	shouldSorenBeTryingToCheat: string;
 	completed: boolean;
 	crossword: CrosswordElements;
 };
