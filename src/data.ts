@@ -72,7 +72,7 @@ export const data3: CrosswordType = {
 				id: '8',
 			},
 			9: {
-				clue: 'Hvorfor er C# bedre end python?',
+				clue: 'Bare én af grundene til at er C# bedre end python',
 				answer: 'HURTIGERE',
 				row: 9,
 				col: 7,
@@ -130,7 +130,7 @@ export const data3: CrosswordType = {
 		},
 		down: {
 			1: {
-				clue: 'Dette rammer åbenbart anderledes ifølge et deep fried Olsen Banden meme fra onsdag d. 7. december',
+				clue: 'Dette rammer åbenbart anderledes ifølge et deep fried Olsen Banden meme fra onsdag d. 7. december i meme-shitty',
 				answer: 'DEMENS',
 				row: 0,
 				col: 14,

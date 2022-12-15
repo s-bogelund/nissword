@@ -34,14 +34,11 @@ const CountDown: FC<CountDownProps> = ({
 	const testSeconds = testCountDown % 60;
 
 	useEffect(() => {
-		setCountDown(currentTimer);
-		setTestCountDown(currentTimer);
-	}, [currentTimer]);
-
-	useEffect(() => {
-		console.log('countDown: ', countDown);
-
 		if (countDown === 0 || shouldStop) {
+			console.log(
+				`Countdown stopped at ${countDown} seconds and shouldStop is ${shouldStop}`
+			);
+
 			onCounterEnd();
 			return;
 		}

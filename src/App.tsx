@@ -14,7 +14,7 @@ import { Answer, CrosswordType as GameState } from './types';
 import { data3 } from './data';
 import YoutTubeModal from './components/modals/YoutubeModal';
 import Alert from './components/Alert';
-import FakeWinnerModal from './components/modals/FakeWinModal';
+import FakeWinnerModal from './components/modals/ActualWinModal';
 import FakeLossModal from './components/modals/FakeLossModal';
 
 function App() {
@@ -27,11 +27,13 @@ function App() {
 	const [hasWon, setHasWon] = useState(false);
 	const [isAllowedToCloseModal, setIsAllowedToCloseYtModal] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
+	const [alarmHasPlayed, setAlarmHasPlayed] = useState(false);
 	const [hasFakeWon, setHasFakeWon] = useState(false);
 	const modalButtonRef = useRef<HTMLButtonElement>(null);
 	const [keyPressed] = useState([] as string[]);
 	const grunt = new Audio('src/assets/grunt1.mp3');
 	const alarm = new Audio('src/assets/alarm.wav');
+	const bubblegum = new Audio('src/assets/bubblegum.mp3');
 
 	const clearLocalStorage = () => {
 		localStorage.clear();
@@ -60,16 +62,24 @@ function App() {
 
 	useEffect(() => {
 		document.addEventListener('keydown', e => {
-			if (e.key === keyPressed[keyPressed.length - 1]) return;
+			if (e.key === keyPressed[keyPressed.length - 1] && e.key !== 's') return;
 
 			keyPressed.push(e.key);
 
-			keyPressed.splice(-6, keyPressed.length - 5);
-			console.log('keyPressed', keyPressed);
+			const lastFive = keyPressed.slice(-5);
+			console.log('lastFive', lastFive);
 
-			if (keyPressed.join('').toUpperCase() === 'GRYNT') {
+			if (lastFive.join('').toUpperCase() === 'GRYNT') {
 				grunt.play();
 			}
+			const lastSevent = keyPressed.slice(-7);
+			console.log('lastSeven', lastSevent);
+
+			if (lastSevent.join('').toUpperCase() === 'KICKASS') {
+				bubblegum.play();
+			}
+
+			if (keyPressed.length > 18) keyPressed.splice(0, keyPressed.length - 8);
 		});
 	}, []);
 
@@ -117,6 +127,8 @@ function App() {
 	}, [gameState?.something]);
 
 	const handleTimeRunOut = () => {
+		console.log('time run out');
+
 		setTimerRunOut(true);
 		const newGameState = {
 			...gameState,
@@ -124,7 +136,10 @@ function App() {
 		};
 		setGameState(newGameState);
 		setHasFakeLost(true);
-		alarm.play();
+		if (!alarmHasPlayed) {
+			alarm.play();
+			setAlarmHasPlayed(true);
+		}
 	};
 
 	const currentTimer = useMemo(
@@ -162,7 +177,10 @@ function App() {
 		<>
 			{!nextPhaseBegun && (
 				<>
-					<FakeLossModal isOpen={hasFakeLost} onClose={() => {}} />
+					<FakeLossModal
+						isOpen={hasFakeLost && !nextPhaseBegun}
+						onClose={() => {}}
+					/>
 					<YoutTubeModal
 						className={`${setShowModalAfterSmallDelay}`}
 						isOpen={showYtModal}
@@ -201,30 +219,12 @@ function App() {
 							>
 								Clear Localstorage
 							</button>
-							<button
-								className="btn btn-secondary absolute left-5 top-3 w-14 !max-h-12 text-xs"
-								onClick={() => setShowYtModal(true)}
-								ref={modalButtonRef}
-							>
-								Modal
-							</button>
 
 							<button
 								className="btn btn-secondary absolute left-5 top-15"
 								onClick={() => seedDb()}
 							>
 								Seed Data Base
-							</button>
-							<button
-								className="btn btn-secondary absolute left-5 bottom-10"
-								onClick={() =>
-									window.open(
-										'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-										'_blank'
-									)
-								}
-							>
-								Press Other Button
 							</button>
 							<h1 className="text-secondary text-5xl font-semibold mb-10">
 								Sørens Store Krydsord Om Alting
