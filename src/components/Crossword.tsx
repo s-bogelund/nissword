@@ -41,13 +41,9 @@ const Crossword: FC<CrosswordProps> = ({
 			localStorage.setItem('crosswordSolved', 'false');
 		}
 		if (solved === 'true') {
-			// alert('Nåå, der troede du lige, at du var smart, hva?');
 			triedToCheat();
 			localStorage.setItem('crosswordSolved', 'false');
 			localStorage.setItem('ErSørenDum?', 'Ja');
-		}
-		if (!epicPassword) {
-			localStorage.setItem('epicPassword', 'ISwan');
 		}
 		updateFromRealStorage();
 	}, []);

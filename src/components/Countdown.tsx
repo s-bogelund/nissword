@@ -12,6 +12,7 @@ type CountDownProps = {
 	initialTimer: number;
 	onCounterUpdate: (count: number) => void;
 	onCounterEnd: () => void;
+	shouldStop: boolean;
 };
 
 const CountDown: FC<CountDownProps> = ({
@@ -19,6 +20,7 @@ const CountDown: FC<CountDownProps> = ({
 	initialTimer,
 	onCounterUpdate,
 	onCounterEnd,
+	shouldStop,
 }) => {
 	const [countDown, setCountDown] = useState(currentTimer);
 	const [testCountDown, setTestCountDown] = useState(currentTimer);
@@ -32,7 +34,14 @@ const CountDown: FC<CountDownProps> = ({
 	const testSeconds = testCountDown % 60;
 
 	useEffect(() => {
-		if (countDown === 0) {
+		setCountDown(currentTimer);
+		setTestCountDown(currentTimer);
+	}, [currentTimer]);
+
+	useEffect(() => {
+		console.log('countDown: ', countDown);
+
+		if (countDown === 0 || shouldStop) {
 			onCounterEnd();
 			return;
 		}
@@ -58,11 +67,16 @@ const CountDown: FC<CountDownProps> = ({
 		if (adjustTimerAfterReload) {
 			setSpeedMultiplier(handleReloadMultiplier());
 		}
+
+		if (speedMultiplier < 3.5) {
+			return speedMultiplier * 100;
+		}
+
 		if (countDown > 0.75 * initialTimer)
-			setSpeedMultiplier(prev => prev - 0.011);
+			setSpeedMultiplier(prev => prev - 0.005);
 		else if (countDown > 0.5 * initialTimer)
-			setSpeedMultiplier(prev => prev - 0.015);
-		else setSpeedMultiplier(prev => prev - 0.005);
+			setSpeedMultiplier(prev => prev - 0.007);
+		else setSpeedMultiplier(prev => prev - 0.009);
 
 		return speedMultiplier * 100;
 	}, [countDown]);
@@ -98,9 +112,12 @@ const CountDown: FC<CountDownProps> = ({
 			<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
 				{Math.round(countDownSpeed)}
 			</h1>
-			{/* <h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
+			<h1 className={`text-base font-semibold mb-2 + ${countDownColor}`}>
+				{'Spd: ' + speedMultiplier.toFixed(2)}
+			</h1>
+			<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
 				{testMinutes}:{testSeconds < 10 ? `0${testSeconds}` : testSeconds}
-			</h1> */}
+			</h1>
 		</div>
 	);
 

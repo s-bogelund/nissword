@@ -14,7 +14,8 @@ import { Answer, CrosswordType as GameState } from './types';
 import { data3 } from './data';
 import YoutTubeModal from './components/modals/YoutubeModal';
 import Alert from './components/Alert';
-import WinnerModal from './components/modals/WinnerModal';
+import FakeWinnerModal from './components/modals/FakeWinModal';
+import FakeLossModal from './components/modals/FakeLossModal';
 
 function App() {
 	const [gameState, setGameState] = useState({} as GameState);
@@ -22,14 +23,15 @@ function App() {
 	const [postToDbToggle, setPostToDbToggle] = useState(false);
 	const [timerRunOut, setTimerRunOut] = useState(false);
 	const [showYtModal, setShowYtModal] = useState(false);
+	const [hasFakeLost, setHasFakeLost] = useState(false);
 	const [hasWon, setHasWon] = useState(false);
-	const [isAllowedToCloseModal, setIsAllowedToCloseModal] = useState(false);
-	const [pointerEventOver, setPointerEventOver] = useState(false);
+	const [isAllowedToCloseModal, setIsAllowedToCloseYtModal] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
-	const [firstArnoldFound, setFirstArnoldFound] = useState(false);
+	const [hasFakeWon, setHasFakeWon] = useState(false);
 	const modalButtonRef = useRef<HTMLButtonElement>(null);
-	const [keyPressed, setKeyPressed] = useState([] as string[]);
-	const audio = new Audio('src/assets/grunt1.mp3');
+	const [keyPressed] = useState([] as string[]);
+	const grunt = new Audio('src/assets/grunt1.mp3');
+	const alarm = new Audio('src/assets/alarm.wav');
 
 	const clearLocalStorage = () => {
 		localStorage.clear();
@@ -66,20 +68,18 @@ function App() {
 			console.log('keyPressed', keyPressed);
 
 			if (keyPressed.join('').toUpperCase() === 'GRYNT') {
-				audio.play();
+				grunt.play();
 			}
 		});
 	}, []);
 
 	useEffect(() => {
-		if (gameState.currentTimer < 575 && gameState.crossword) {
-			console.log('posting state to db', gameState);
+		if (gameState.currentTimer < 860 && gameState.crossword) {
 			postGameState(gameState);
 		}
 
 		if (timerRunOut) {
 			postGameState(gameState);
-			// window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
 		}
 	}, [gameState.currentTimer, timerRunOut]);
 
@@ -90,7 +90,6 @@ function App() {
 
 	useEffect(() => {
 		if (gameState.crossword) {
-			console.log('posting state to db', gameState);
 			if (allAnswersFound(answers)) {
 				const newGameState = {
 					...gameState,
@@ -112,27 +111,32 @@ function App() {
 		setGameState(updatedCrossword);
 	};
 
-	const listenForAudio = (e: any) => {
-		// if L and Y and D are all pressed, play audio
-		if (e.key === 'L' && e.key === 'Y' && e.key === 'D') {
-			console.log('audio', audio);
-			audio.play();
-		}
+	const nextPhaseBegun = useMemo(() => {
+		if (gameState?.something?.length > 0) return true;
+		else return false;
+	}, [gameState?.something]);
+
+	const handleTimeRunOut = () => {
+		setTimerRunOut(true);
+		const newGameState = {
+			...gameState,
+			something: ['1'],
+		};
+		setGameState(newGameState);
+		setHasFakeLost(true);
+		alarm.play();
 	};
 
-	const handlePointerModalLaunch = () => {
-		if (showYtModal || !timerRunOut || pointerEventOver) return;
-
-		// window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
-		setPointerEventOver(true);
-	};
-
-	const currentTimer = gameState?.currentTimer;
+	const currentTimer = useMemo(
+		() => gameState?.currentTimer,
+		[gameState?.currentTimer]
+	);
 	const crosswordToPass = gameState?.crossword;
+
 	const initialTimer = useMemo(() => {
 		if (gameState) return gameState.initialTimer;
 		else return 0;
-	}, [gameState.initialTimer]);
+	}, [gameState?.initialTimer]);
 
 	useEffect(() => {
 		if (!gameState?.crossword) return;
@@ -150,39 +154,47 @@ function App() {
 			}, 1000);
 		}
 		setTimeout(() => {
-			setIsAllowedToCloseModal(true);
-		}, 10000);
+			setIsAllowedToCloseYtModal(true);
+		}, 8000);
 	}, [showYtModal, timerRunOut]);
 
 	return (
 		<>
-			<YoutTubeModal
-				className={`${setShowModalAfterSmallDelay}`}
-				isOpen={showYtModal}
-				onClose={() => isAllowedToCloseModal && setShowYtModal(false)}
+			{!nextPhaseBegun && (
+				<>
+					<FakeLossModal isOpen={hasFakeLost} onClose={() => {}} />
+					<YoutTubeModal
+						className={`${setShowModalAfterSmallDelay}`}
+						isOpen={showYtModal}
+						onClose={() => isAllowedToCloseModal && setShowYtModal(false)}
+					/>
+				</>
+			)}
+			<FakeWinnerModal
+				isOpen={!nextPhaseBegun && hasFakeWon}
+				onClose={() => setHasWon(false)}
 			/>
-			<WinnerModal isOpen={hasWon} onClose={() => setHasWon(false)} />
-			{currentTimer && gameState && (
+			{gameState && (
 				<div
-					onPointerMove={() => {
-						// handlePointerModalLaunch();
-					}}
-					onKeyDown={() => listenForAudio((e: any) => listenForAudio(e))}
-					onClick={() => handlePointerModalLaunch()}
 					data-theme="night"
 					className="flex flex-col relative items-center min-h-[100vh] w-[100vw]"
 				>
-					{currentTimer && gameState && (
+					{gameState && (
 						<div
 							className="flex flex-col items-center mt-8 w-full"
 							id="modal-root"
 						>
-							<CountDown
-								onCounterEnd={() => setTimerRunOut(true)}
-								onCounterUpdate={timer => updateCrosswordTimer(timer)}
-								currentTimer={currentTimer}
-								initialTimer={initialTimer}
-							/>
+							{!nextPhaseBegun && !!gameState?.currentTimer && (
+								<CountDown
+									shouldStop={hasWon}
+									onCounterEnd={() => {
+										handleTimeRunOut();
+									}}
+									onCounterUpdate={timer => updateCrosswordTimer(timer)}
+									currentTimer={currentTimer}
+									initialTimer={initialTimer}
+								/>
+							)}
 							<button
 								className="btn btn-secondary absolute left-15 top-3"
 								onClick={() => clearLocalStorage()}
@@ -222,7 +234,7 @@ function App() {
 									<Crossword
 										triedToCheat={() => setShowYtModal(true)}
 										onCorrect={(direction, number, answer) =>
-											updateAnswers(answer)
+											updateAnswers(number.toString())
 										}
 										onUpdate={newCrossword => {}}
 										data={crosswordToPass}
@@ -237,29 +249,23 @@ function App() {
 		</>
 	);
 
-	function updateAnswers(answer: string) {
-		let answerToUpdate: Answer[] | undefined = answers.filter(
-			a => a.answer === answer
-		);
-		console.log('answerToUpdate: ', answerToUpdate);
+	function updateAnswers(id: string) {
+		let answerToUpdate: Answer | undefined = answers.find(a => a.id === id);
 
-		if (!answerToUpdate) return;
-		if (answerToUpdate[0].answer === 'ARNOLD') setFirstArnoldFound(true);
-
-		if (answerToUpdate[0].answer === 'ARNOLD' && firstArnoldFound) {
-			if (answerToUpdate[1].completed !== true) {
-				answerToUpdate[1].completed = true;
-				setShowAlert(true);
-			}
-		} else {
-			if (answerToUpdate[0].completed === true) return;
-			setShowAlert(true);
-			answerToUpdate[0].completed = true;
+		if (!answerToUpdate || answerToUpdate.completed === true) {
+			console.log('Answer not found');
+			return;
 		}
-		console.log('answerToUpdate 2: ', answerToUpdate);
 
-		setAnswers([...answers]);
-		console.log('answers from updateAnswers: ', answers);
+		const newAnswers = answers.map(a => {
+			if (a.id === id) {
+				a.completed = true;
+			}
+			return a;
+		});
+		setShowAlert(true);
+
+		setAnswers(newAnswers);
 
 		setTimeout(() => {
 			setShowAlert(false);

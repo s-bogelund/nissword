@@ -9,6 +9,7 @@ export type CrosswordType = {
 	currentTimer: number;
 	initialTimer: number;
 	shouldSorenBeTryingToCheat: string;
+	something: string[];
 	completed: boolean;
 	crossword: CrosswordElements;
 };
@@ -32,6 +33,7 @@ export type EncryptedCrosswordElements = {
 
 export type MyClueType = {
 	completed: boolean;
+	id: string;
 } & ClueTypeOriginal;
 
 export type Across = Record<string, MyClueType>;
@@ -40,4 +42,5 @@ export type Down = Record<string, MyClueType>;
 export type Answer = {
 	answer: string;
 	completed: boolean;
+	id: string;
 };

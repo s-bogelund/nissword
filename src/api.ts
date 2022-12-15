@@ -31,7 +31,7 @@ export const fetchGameState = async () => {
 
 //* ENCRYPTED POST
 export const postGameState = async (gameState: CrosswordType) => {
-	console.log('postGameState', gameState);
+	// console.log('postGameState', gameState);
 
 	const encrypted = encryptCrossword(gameState);
 
@@ -84,13 +84,14 @@ export const postGameState = async (gameState: CrosswordType) => {
 // };
 
 // extract all answers from the crossword
-export const getAnswers = (crossword: CrosswordType) => {
+export const getAnswers = (crossword: CrosswordType): Answer[] => {
 	console.log('getAnswers', crossword);
 
 	let answers = Object.values(crossword.crossword.across).map(clue => {
 		return {
 			answer: clue.answer,
 			completed: clue.completed,
+			id: clue.id,
 		};
 	});
 
@@ -100,6 +101,7 @@ export const getAnswers = (crossword: CrosswordType) => {
 			return {
 				answer: clue.answer,
 				completed: clue.completed,
+				id: clue.id,
 			};
 		}),
 	];
@@ -125,7 +127,7 @@ export const updateCrosswordFromAnswers = (
 ) => {
 	const updatedCrossword = { ...crossword };
 	answers.forEach(answer => {
-		const clue = getClueFromAnswer(crossword, answer.answer);
+		const clue = getClueFromId(crossword, answer.id);
 		if (clue) {
 			clue.completed = answer.completed;
 		}
@@ -139,6 +141,16 @@ function getClueFromAnswer(crossword: CrosswordType, answer: string) {
 	);
 	const down = Object.values(crossword.crossword.down).find(
 		clue => clue.answer === answer
+	);
+	return across || down;
+}
+
+function getClueFromId(crossword: CrosswordType, id: string) {
+	const across = Object.values(crossword.crossword.across).find(
+		clue => clue.id === id
+	);
+	const down = Object.values(crossword.crossword.down).find(
+		clue => clue.id === id
 	);
 	return across || down;
 }

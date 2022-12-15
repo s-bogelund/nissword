@@ -38,136 +38,12 @@ export const data1: CluesInputOriginal = {
 	},
 };
 
-// export const data2: CrosswordType = {
-// 	currentTimer: 600,
-// 	initialTimer: 600,
-// 	completed: false,
-// 	crossword: {
-// 		across: {
-// 			3: {
-// 				clue: 'Hvad laver du egentlig?',
-// 				answer: 'DEVOPS',
-// 				row: 5,
-// 				col: 7,
-// 				completed: false,
-// 			},
-// 			7: {
-// 				clue: 'Hvad kan og vil en svane brække?',
-// 				answer: 'ARM',
-// 				row: 7,
-// 				col: 12,
-// 				completed: false,
-// 			},
-// 			8: {
-// 				clue: 'Dødbringende ikke-rigtig-nød',
-// 				answer: 'PEANUT',
-// 				row: 8,
-// 				col: 0,
-// 				completed: false,
-// 			},
-// 			9: {
-// 				clue: 'Hvorfor er C# bedre end python?',
-// 				answer: 'HURTIGERE',
-// 				row: 9,
-// 				col: 5,
-// 				completed: false,
-// 			},
-// 			11: {
-// 				clue: 'De bedste settings',
-// 				answer: 'SRØNZ',
-// 				row: 11,
-// 				col: 2,
-// 				completed: false,
-// 			},
-// 			12: {
-// 				clue: 'Svaret kan findes der, hvor passwords bedst opbevares',
-// 				answer: 'ISWAN',
-// 				row: 13,
-// 				col: 9,
-// 				completed: false,
-// 			},
-// 			14: {
-// 				clue: 'Navnet på byen der ligger 33 grader, 16 bueminutter og 11 buesekunder nordlig bredde og 96 grader, 19 bueminutter og 52 buesekunder vestlig længde?',
-// 				answer: 'ARNOLD',
-// 				row: 0,
-// 				col: 7,
-// 				completed: false,
-// 			},
-// 			15: {
-// 				clue: 'Slap A-PI',
-// 				answer: 'REST',
-// 				row: 7,
-// 				col: 0,
-// 				completed: false,
-// 			},
-// 		},
-// 		down: {
-// 			1: {
-// 				clue: 'Tema for deep fried Olsen Banden meme onsdag d. 7. december',
-// 				answer: 'DEMENS',
-// 				row: 0,
-// 				col: 12,
-// 				completed: false,
-// 			},
-// 			2: {
-// 				clue: 'Bevinget og berigende dyr',
-// 				answer: 'SVANE',
-// 				row: 5,
-// 				col: 3,
-// 				completed: false,
-// 			},
-// 			4: {
-// 				clue: 'Kunder elsker, når deres søgning er...',
-// 				answer: 'ELASTISK',
-// 				row: 5,
-// 				col: 8,
-// 				completed: false,
-// 			},
-// 			5: {
-// 				clue: 'Slangehviskerens sprog',
-// 				answer: 'PYTHON',
-// 				row: 6,
-// 				col: 5,
-// 				completed: false,
-// 			},
-// 			6: {
-// 				clue: 'Hvis man siger Franz er dårlig til CS, så har man...',
-// 				answer: 'RET',
-// 				row: 7,
-// 				col: 1,
-// 				completed: false,
-// 			},
-// 			7: {
-// 				clue: 'Ubrugelig Pokémon uden ske',
-// 				answer: 'ABRA',
-// 				row: 7,
-// 				col: 12,
-// 				completed: false,
-// 			},
-// 			10: {
-// 				clue: 'What do slay today?',
-// 				answer: 'GOATS',
-// 				row: 9,
-// 				col: 10,
-// 				completed: false,
-// 			},
-// 			13: {
-// 				clue: 'Fornavnet på den der spillede hovedrollen i den bedste julefilm nogensinde der starter med "Jingle"?',
-// 				answer: 'ARNOLD',
-// 				row: 0,
-// 				col: 7,
-// 				completed: false,
-// 			},
-// 		},
-// 	},
-// };
-
-// same data but every column is 2 higher
 export const data3: CrosswordType = {
-	currentTimer: 900,
-	initialTimer: 900,
+	currentTimer: 1200,
+	initialTimer: 1200,
 	shouldSorenBeTryingToCheat: 'no! stop!',
 	completed: false,
+	something: [],
 	crossword: {
 		across: {
 			3: {
@@ -176,13 +52,16 @@ export const data3: CrosswordType = {
 				row: 5,
 				col: 9,
 				completed: false,
+				id: '3',
 			},
 			7: {
-				clue: 'Hvad kan og vil en svane brække? (se 21)',
-				answer: 'ARM',
-				row: 7,
-				col: 14,
+				clue: 'Hvilket dyr har lyden der kommer, hvis du taster "GRYNT" og giver bælgfrugter, når den ikke kan mere?',
+				answer: 'HVALROS',
+				row: 1,
+				col: 5,
 				completed: false,
+
+				id: '7',
 			},
 			8: {
 				clue: 'Dødbringende ikke-rigtig-nød',
@@ -190,6 +69,7 @@ export const data3: CrosswordType = {
 				row: 8,
 				col: 2,
 				completed: false,
+				id: '8',
 			},
 			9: {
 				clue: 'Hvorfor er C# bedre end python?',
@@ -197,6 +77,7 @@ export const data3: CrosswordType = {
 				row: 9,
 				col: 7,
 				completed: false,
+				id: '9',
 			},
 			11: {
 				clue: 'De bedste settings (se 17)',
@@ -204,13 +85,15 @@ export const data3: CrosswordType = {
 				row: 11,
 				col: 4,
 				completed: false,
+				id: '11',
 			},
 			12: {
-				clue: 'Svaret kan findes der, hvor passwords bedst opbevares i browseren',
+				clue: 'Hvilket navn var der på den første seddel?',
 				answer: 'ISWAN',
 				row: 13,
 				col: 11,
 				completed: false,
+				id: '12',
 			},
 			14: {
 				clue: 'Navnet på byen der ligger 33 grader, 16 bueminutter og 11 buesekunder nordlig bredde og 96 grader, 19 bueminutter og 52 buesekunder vestlig længde?',
@@ -218,6 +101,7 @@ export const data3: CrosswordType = {
 				row: 0,
 				col: 9,
 				completed: false,
+				id: '14',
 			},
 			18: {
 				clue: 'Slap A-PI',
@@ -225,6 +109,7 @@ export const data3: CrosswordType = {
 				row: 9,
 				col: 0,
 				completed: false,
+				id: '18',
 			},
 			19: {
 				clue: 'Billigste shotgun is CS',
@@ -232,13 +117,15 @@ export const data3: CrosswordType = {
 				row: 3,
 				col: 8,
 				completed: false,
+				id: '19',
 			},
 			24: {
-				clue: 'Hvilket dyr har lyden der kommer, hvis du taster "GRYNT" og giver bælgfrugter, når den ikke kan mere?',
-				answer: 'HVALROS',
-				row: 1,
-				col: 5,
+				clue: 'Hvad kan og vil en svane brække? (se 21)',
+				answer: 'ARM',
+				row: 7,
+				col: 14,
 				completed: false,
+				id: '24',
 			},
 		},
 		down: {
@@ -248,6 +135,7 @@ export const data3: CrosswordType = {
 				row: 0,
 				col: 14,
 				completed: false,
+				id: '1',
 			},
 			2: {
 				clue: 'Et bevinget og berigende dyr',
@@ -255,6 +143,7 @@ export const data3: CrosswordType = {
 				row: 5,
 				col: 5,
 				completed: false,
+				id: '2',
 			},
 			4: {
 				clue: 'Kunder elsker, når deres søgning er...',
@@ -262,6 +151,7 @@ export const data3: CrosswordType = {
 				row: 5,
 				col: 10,
 				completed: false,
+				id: '4',
 			},
 			5: {
 				clue: 'Slangehviskeri',
@@ -269,6 +159,7 @@ export const data3: CrosswordType = {
 				row: 6,
 				col: 7,
 				completed: false,
+				id: '5',
 			},
 			6: {
 				clue: 'Hvis man siger Franz er dårlig til CS, så har man...',
@@ -276,6 +167,7 @@ export const data3: CrosswordType = {
 				row: 7,
 				col: 3,
 				completed: false,
+				id: '6',
 			},
 			10: {
 				clue: 'What to slay today?',
@@ -283,6 +175,7 @@ export const data3: CrosswordType = {
 				row: 9,
 				col: 12,
 				completed: false,
+				id: '10',
 			},
 			13: {
 				clue: 'Fornavnet på den der spillede hovedrollen i den bedste julefilm nogensinde der starter med "Jingle"',
@@ -290,6 +183,7 @@ export const data3: CrosswordType = {
 				row: 0,
 				col: 9,
 				completed: false,
+				id: '13',
 			},
 			15: {
 				clue: 'Ikke XBOX eller PC',
@@ -297,6 +191,7 @@ export const data3: CrosswordType = {
 				row: 8,
 				col: 2,
 				completed: false,
+				id: '15',
 			},
 			16: {
 				clue: 'Skal oftest ikke vare ved for evigt i programmering',
@@ -304,6 +199,7 @@ export const data3: CrosswordType = {
 				row: 4,
 				col: 12,
 				completed: false,
+				id: '16',
 			},
 			17: {
 				clue: 'Kan enten være noget der daler eller noget der stiger op... i næsen',
@@ -311,6 +207,7 @@ export const data3: CrosswordType = {
 				row: 11,
 				col: 4,
 				completed: false,
+				id: '17',
 			},
 			20: {
 				clue: 'Antallet af udviklere i IT Minds der har erfaring med at udvikle til Windows Phone',
@@ -318,6 +215,7 @@ export const data3: CrosswordType = {
 				row: 12,
 				col: 15,
 				completed: false,
+				id: '20',
 			},
 			21: {
 				clue: 'Ubrugelig Pokémon uden ske',
@@ -325,6 +223,7 @@ export const data3: CrosswordType = {
 				row: 7,
 				col: 14,
 				completed: false,
+				id: '21',
 			},
 			22: {
 				clue: 'Hvad er der en smule mindre af på kontoret, når der spilles autopets?',
@@ -332,6 +231,7 @@ export const data3: CrosswordType = {
 				row: 0,
 				col: 10,
 				completed: false,
+				id: '22',
 			},
 			23: {
 				clue: 'Et nanosekund',
@@ -339,6 +239,7 @@ export const data3: CrosswordType = {
 				row: 0,
 				col: 11,
 				completed: false,
+				id: '23',
 			},
 		},
 	},
