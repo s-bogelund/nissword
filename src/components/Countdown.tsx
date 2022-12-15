@@ -39,7 +39,7 @@ const CountDown: FC<CountDownProps> = ({
 		// TODO: THIS SHOULDN'T BE COMMENTED OUT
 		const interval = setInterval(() => {
 			setCountDown(prev => prev - 1);
-			if (countDown % 5 === 0) onCounterUpdate(countDown);
+			if (countDown % 5 === 0 || countDown === 0) onCounterUpdate(countDown);
 		}, countDownSpeed);
 
 		return () => clearInterval(interval);

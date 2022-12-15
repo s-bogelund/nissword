@@ -85,6 +85,8 @@ export const postGameState = async (gameState: CrosswordType) => {
 
 // extract all answers from the crossword
 export const getAnswers = (crossword: CrosswordType) => {
+	console.log('getAnswers', crossword);
+
 	let answers = Object.values(crossword.crossword.across).map(clue => {
 		return {
 			answer: clue.answer,
@@ -106,16 +108,16 @@ export const getAnswers = (crossword: CrosswordType) => {
 };
 
 // create objects of all answers and whether they are completed
-export const getAnswersAndCompleted = (crossword: CrosswordType) => {
-	const answers = getAnswers(crossword);
-	const answersAndCompleted = answers.map(answer => {
-		return {
-			answer,
-			completed: false,
-		};
-	});
-	return answersAndCompleted;
-};
+// export const getAnswersAndCompleted = (crossword: CrosswordType) => {
+// 	const answers = getAnswers(crossword);
+// 	const answersAndCompleted = answers.map(answer => {
+// 		return {
+// 			answer,
+// 			completed: false,
+// 		};
+// 	});
+// 	return answersAndCompleted;
+// };
 
 export const updateCrosswordFromAnswers = (
 	crossword: CrosswordType,

@@ -285,7 +285,7 @@ export const data3: CrosswordType = {
 				completed: false,
 			},
 			13: {
-				clue: 'Fornavnet på den der spillede hovedrollen i den bedste julefilm nogensinde der starter med "Jingle"?',
+				clue: 'Fornavnet på den der spillede hovedrollen i den bedste julefilm nogensinde der starter med "Jingle"',
 				answer: 'ARNOLD',
 				row: 0,
 				col: 9,
@@ -327,7 +327,7 @@ export const data3: CrosswordType = {
 				completed: false,
 			},
 			22: {
-				clue: 'Hvad får man ikke noget af på kontoret, når der spilles autopets?',
+				clue: 'Hvad er der en smule mindre af på kontoret, når der spilles autopets?',
 				answer: 'RO',
 				row: 0,
 				col: 10,

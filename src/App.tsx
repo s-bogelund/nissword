@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import {
 	fetchGameState,
 	getAnswers,
-	getAnswersAndCompleted,
 	postGameState,
 	updateCrosswordFromAnswers,
 } from './api';
@@ -59,8 +58,6 @@ function App() {
 
 	useEffect(() => {
 		document.addEventListener('keydown', e => {
-			e.preventDefault();
-
 			if (e.key === keyPressed[keyPressed.length - 1]) return;
 
 			keyPressed.push(e.key);
