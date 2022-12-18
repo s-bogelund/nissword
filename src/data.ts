@@ -39,7 +39,7 @@ export const data1: CluesInputOriginal = {
 };
 
 export const data3: CrosswordType = {
-	currentTimer: 40,
+	currentTimer: 1200,
 	initialTimer: 1200,
 	shouldSorenBeTryingToCheat: 'no! stop!',
 	completed: false,
@@ -194,7 +194,7 @@ export const data3: CrosswordType = {
 				id: '10',
 			},
 			13: {
-				clue: 'Fornavnet på den der spillede hovedrollen i den bedste julefilm nogensinde der starter med "Jingle"',
+				clue: 'Fornavnet på skuespilleren der spillede hovedrollen i den bedste julefilm nogensinde der starter med "Jingle"',
 				answer: 'ARNOLD',
 				row: 0,
 				col: 9,
@@ -209,14 +209,6 @@ export const data3: CrosswordType = {
 				completed: false,
 				id: '15',
 			},
-			// 16: {
-			// 	clue: 'Hvad hed karakteren med den mest badass replik i filmhistorien? (prøv at taste KICKASS)',
-			// 	answer: 'NADA',
-			// 	row: 0,
-			// 	col: 11,
-			// 	completed: false,
-			// 	id: '16',
-			// },
 			17: {
 				clue: 'Kan enten være noget der daler eller noget der stiger op... i næsen',
 				answer: 'SNE',

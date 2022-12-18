@@ -27,10 +27,8 @@ function App() {
 	const [hasWon, setHasWon] = useState(false);
 	const [isAllowedToCloseYtModal, setIsAllowedToCloseYtModal] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
-	const [alarmHasPlayed, setAlarmHasPlayed] = useState(false);
 	const [keyPressed] = useState([] as string[]);
 	const grunt = new Audio('src/assets/grunt1.mp3');
-	const alarm = new Audio('src/assets/alarm.wav');
 	const bubblegum = new Audio('src/assets/bubblegum.mp3');
 
 	const clearLocalStorage = () => {
@@ -138,10 +136,7 @@ function App() {
 		};
 		setGameState(newGameState);
 		setHasFakeLost(true);
-		if (!hasBeenRickRolled) {
-			alarm.play();
-			setAlarmHasPlayed(true);
-		}
+		localStorage.setItem('crosswordSolved', 'false');
 	};
 
 	const currentTimer = useMemo(
@@ -200,10 +195,7 @@ function App() {
 					onClose={() => isAllowedToCloseYtModal && handleYoutubeModalClose()}
 				/>
 			</>
-			<ActualWinModal
-				isOpen={hasWon || true}
-				onClose={() => setHasWon(false)}
-			/>
+			<ActualWinModal isOpen={hasWon} onClose={() => setHasWon(false)} />
 			{gameState && (
 				<div
 					data-theme="night"

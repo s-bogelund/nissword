@@ -4,7 +4,7 @@ module.exports = {
 	theme: {
 		extend: {
 			gridTemplateColumns: {
-				crossword: '60% 40%',
+				crossword: '62% 38%',
 			},
 		},
 	},

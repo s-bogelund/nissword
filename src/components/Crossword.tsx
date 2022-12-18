@@ -21,10 +21,6 @@ const Crossword: FC<CrosswordProps> = ({
 	onCorrect,
 	triedToCheat,
 }) => {
-	const [color, setColor] = React.useState('#aaaaaa');
-	const [dataState, setDataState] = React.useState(data);
-	const [lastKey, setLastKey] = React.useState('');
-
 	const updatedData = useMemo(() => {
 		console.log('dataState: ', data);
 
@@ -33,12 +29,11 @@ const Crossword: FC<CrosswordProps> = ({
 
 	useEffect(() => {
 		const solved = localStorage.getItem('crosswordSolved');
-		const epicPassword = localStorage.getItem('epicPassword');
 
 		console.log('data', data);
 
 		if (!solved) {
-			localStorage.setItem('crosswordSolved', 'false');
+			// localStorage.setItem('crosswordSolved', 'false');
 		}
 		if (solved === 'true') {
 			triedToCheat();
