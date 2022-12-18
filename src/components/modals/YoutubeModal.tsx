@@ -34,20 +34,19 @@ const YoutTubeModal: FC<Dialog> = ({ className, isOpen, onClose, onClick }) => {
 			)}
 			{!showYoutube && (
 				<div className="flex flex-col items-center justify-center w-fit h-fit gap-6 p-4">
-					<h1 className="text-2xl font-bold text-success">
+					<h1 className="text-3xl font-bold text-success">
 						HALLELUJA DA FOR POKKER!!
 					</h1>
-					<p>
-						Damn son du gjorde det sgu! Jeg troede virkelig ikke du ville nå
-						det!
+					<p className="text-xl">Good job, you sweet Sommer child!</p>
+					<p className="text-xl">
+						Damn son du gjorde det sgu! Jeg er glad for, at du kunne nå det!
 					</p>
-					<p>Good job, you sweet Sommer child!</p>
-					<p>Så find da ud af, hvor din gave er :)</p>
+					<p className="text-xl">Så find da ud af, hvor din gave er :)</p>
 					<div className="flex mt-3 w-full justify-end">
 						<button
 							className="btn btn-secondary px-10"
 							onClick={() => setShowYoutube(true)}
-							disabled={showYoutube}
+							disabled={buttonDisabled}
 						>
 							Move on
 						</button>

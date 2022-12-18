@@ -102,7 +102,7 @@ const CountDown: FC<CountDownProps> = ({
 				>
 					{minutes}:{seconds < 10 ? `0${seconds}` : seconds}
 				</div>
-				<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
+				{/* <h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
 					{Math.round(countDownSpeed)}
 				</h1>
 				<h1 className={`text-base font-semibold mb-2 + ${countDownColor}`}>
@@ -110,7 +110,7 @@ const CountDown: FC<CountDownProps> = ({
 				</h1>
 				<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
 					{testMinutes}:{testSeconds < 10 ? `0${testSeconds}` : testSeconds}
-				</h1>
+				</h1> */}
 			</>
 		);
 	};

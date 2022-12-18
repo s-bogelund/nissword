@@ -1,35 +1,24 @@
 import React, { FC, useMemo, useState } from 'react';
 import Modal, { Dialog } from '../Modal';
 
-const ActualWinModal: FC<Dialog> = ({ className, isOpen, onClose }) => {
+type WinModalProps = {
+	hasBeenRickRolled: boolean;
+} & Dialog;
+
+const ActualWinModal: FC<WinModalProps> = ({
+	className,
+	isOpen,
+	onClose,
+	hasBeenRickRolled,
+}) => {
 	const [showFirstPage, setShowFirstPage] = useState(true);
 	const [showCloseButton, setShowCloseButton] = useState(false);
-	const handleShowCloseButton = () => {
-		if (showFirstPage) {
-			return false;
-		} else {
-			setTimeout(() => {
-				return true;
-			}, 5000);
-		}
-	};
-
-	const updateCloseButton = useMemo(() => {
-		if (showFirstPage) {
-			return false;
-		} else {
-			setTimeout(() => {
-				setShowCloseButton(true);
-			}, 2000);
-			// return true;
-		}
-	}, [showFirstPage]);
 
 	const pageHandler = () => {
-		if (showFirstPage) {
+		if (showFirstPage && hasBeenRickRolled) {
 			return (
 				<>
-					<h1 className="text-2xl font-bold text-success">
+					<h1 className="text-3xl font-bold text-success">
 						Ey du gjorde det ægte denne gang, sygt nok!
 					</h1>
 					<p className="text-xl ">
@@ -37,6 +26,23 @@ const ActualWinModal: FC<Dialog> = ({ className, isOpen, onClose }) => {
 						roll igen ;)
 					</p>
 
+					<div className="flex mt-3 w-full justify-end">
+						<button
+							className="btn btn-secondary px-10"
+							onClick={() => setShowFirstPage(false)}
+						>
+							Move on
+						</button>
+					</div>
+				</>
+			);
+		} else if (showFirstPage && !hasBeenRickRolled) {
+			return (
+				<>
+					<h1 className="text-3xl font-bold text-success">
+						Ey du gjorde det fandme godt!
+					</h1>
+					<p className="text-xl ">Nu er det tid til at få det sidste hint.</p>
 					<div className="flex mt-3 w-full justify-end">
 						<button
 							className="btn btn-secondary px-10"

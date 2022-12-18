@@ -39,7 +39,7 @@ export const data1: CluesInputOriginal = {
 };
 
 export const data3: CrosswordType = {
-	currentTimer: 1200,
+	currentTimer: 40,
 	initialTimer: 1200,
 	shouldSorenBeTryingToCheat: 'no! stop!',
 	completed: false,

@@ -111,7 +111,7 @@ function App() {
 	async function seedDb() {
 		setCurrentlySeeding(true);
 		const response = await postGameState(data3);
-		console.log('database updated', response);
+		console.log('database reseeded', response);
 		setTimeout(() => {
 			setCurrentlySeeding(false);
 		}, 1200);
@@ -187,15 +187,34 @@ function App() {
 		// console.log('isAllowedToCloseYtModal', isAllowedToCloseYtModal);
 	}, [showYtModal, timerRunOut]);
 
+	const gameTotallyOver = useMemo(() => {
+		const gameIsTotallyOver = localStorage.getItem('gameIsTotallyOver');
+		if (!!gameIsTotallyOver) return true;
+		else return false;
+	}, [gameOver, setHasWon]);
+
 	const hasBeenRickRolled = useMemo(() => {
-		const hasBeenRickRolled = localStorage.getItem('hasBeenRickRolled');
-		if (!!hasBeenRickRolled) return true;
+		const rickRollState = localStorage.getItem('hasBeenRickRolled');
+		if (!!rickRollState) return true;
 		else return false;
 	}, [timerRunOut, showYtModal]);
 
 	const handleYoutubeModalClose = () => {
 		setShowYtModal(false);
 		localStorage.setItem('hasBeenRickRolled', 'true');
+	};
+
+	const handleWinModalClose = () => {
+		localStorage.setItem('gameIsTotallyOver', 'true');
+		setHasWon(false);
+		setGameOver(true);
+	};
+
+	const showAlertForThreeSeconds = () => {
+		setShowAlert(true);
+		setTimeout(() => {
+			setShowAlert(false);
+		}, 3000);
 	};
 
 	return (
@@ -213,7 +232,11 @@ function App() {
 					/>
 				</>
 			)}
-			<ActualWinModal isOpen={hasWon} onClose={() => setHasWon(false)} />
+			<ActualWinModal
+				hasBeenRickRolled={hasBeenRickRolled}
+				isOpen={hasWon && !gameTotallyOver}
+				onClose={() => handleWinModalClose()}
+			/>
 			{gameState && (
 				<div
 					data-theme="night"
@@ -267,8 +290,8 @@ function App() {
 						</div>
 					)}
 					{showAlert && <Alert />}
-					{gameOver && !hasWon && (
-						<GameOverAlert text="Type TRYAGAIN if you want to do this again" />
+					{gameTotallyOver && gameOver && (
+						<GameOverAlert text="Tast TRYAGAIN for at spille igen" />
 					)}
 				</div>
 			)}
@@ -296,9 +319,7 @@ function App() {
 
 		setAnswers(newAnswers);
 
-		setTimeout(() => {
-			setShowAlert(false);
-		}, 3000);
+		showAlertForThreeSeconds();
 	}
 
 	function allAnswersFound(answers: Answer[]) {
