@@ -22,7 +22,7 @@ const Crossword: FC<CrosswordProps> = ({
 	triedToCheat,
 }) => {
 	const updatedData = useMemo(() => {
-		console.log('dataState: ', data);
+		// console.log('dataState: ', data);
 
 		return data;
 	}, []);
@@ -30,7 +30,7 @@ const Crossword: FC<CrosswordProps> = ({
 	useEffect(() => {
 		const solved = localStorage.getItem('crosswordSolved');
 
-		console.log('data', data);
+		// console.log('data', data);
 
 		if (!solved) {
 			// localStorage.setItem('crosswordSolved', 'false');

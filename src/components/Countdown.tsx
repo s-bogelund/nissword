@@ -37,9 +37,9 @@ const CountDown: FC<CountDownProps> = ({
 
 	useEffect(() => {
 		if (countDown === 0 || shouldStop) {
-			console.log(
-				`Countdown stopped at ${countDown} seconds and shouldStop is ${shouldStop}`
-			);
+			// console.log(
+			// 	`Countdown stopped at ${countDown} seconds and shouldStop is ${shouldStop}`
+			// );
 
 			onCounterEnd();
 			return;
@@ -134,11 +134,11 @@ const CountDown: FC<CountDownProps> = ({
 	);
 
 	function handleReloadMultiplier(): number {
-		console.log(
-			'handleReloadMultiplier -> currentTimer',
-			currentTimer,
-			initialTimer
-		);
+		// console.log(
+		// 	'handleReloadMultiplier -> currentTimer',
+		// 	currentTimer,
+		// 	initialTimer
+		// );
 
 		if (currentTimer > 0.9 * initialTimer) return 9.4;
 		else if (currentTimer > 0.8 * initialTimer) return 9;

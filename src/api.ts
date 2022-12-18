@@ -7,8 +7,8 @@ import {
 	MyClueType,
 } from './types';
 import SimpleCrypto from 'simple-crypto-js';
-const BASE_API_URL = 'https://nissdb.herokuapp.com/api';
-const LOCAL_API_URL = 'http://localhost:4000/api';
+// const BASE_API_URL = 'https://nissdb.herokuapp.com/api';
+const BASE_API_URL = 'http://localhost:4000/api';
 
 export const ENCRYPTION_KEY = 'phantom_menace_bad';
 var simple = new SimpleCrypto(ENCRYPTION_KEY);
@@ -20,12 +20,12 @@ export const fetchData = async (url: string) => {
 
 //* ENCRYPTED FETCH
 export const fetchGameState = async () => {
-	const data = await fetchData(`${LOCAL_API_URL}/crossword`);
+	const data = await fetchData(`${BASE_API_URL}/crossword`);
 	if (!data) return false;
-	console.log(data);
+	// console.log(data);
 
 	const decrypted = decryptCrossword(data);
-	console.log('decrypted', decrypted);
+	// console.log('decrypted', decrypted);
 
 	return decrypted as CrosswordType;
 };
@@ -36,7 +36,7 @@ export const postGameState = async (gameState: CrosswordType) => {
 
 	const encrypted = encryptCrossword(gameState);
 
-	const response = await fetch(`${LOCAL_API_URL}/crossword`, {
+	const response = await fetch(`${BASE_API_URL}/crossword`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export const postGameState = async (gameState: CrosswordType) => {
 
 // extract all answers from the crossword
 export const getAnswers = (crossword: CrosswordType): Answer[] => {
-	console.log('getAnswers', crossword);
+	// console.log('getAnswers', crossword);
 
 	let answers = Object.values(crossword.crossword.across).map(clue => {
 		return {
@@ -72,7 +72,7 @@ export const getAnswers = (crossword: CrosswordType): Answer[] => {
 			};
 		}),
 	];
-	console.log('answers from get', answers);
+	// console.log('answers from get', answers);
 	return answers;
 };
 

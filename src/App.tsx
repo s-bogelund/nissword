@@ -5,17 +5,15 @@ import {
 	postGameState,
 	updateCrosswordFromAnswers,
 } from './api';
-import SimpleCrypto from 'simple-crypto-js';
-import reactLogo from './assets/react.svg';
 import CountDown from './components/Countdown';
 import Crossword from './components/Crossword';
-import MyPage from './components/Crossword';
 import { Answer, CrosswordType as GameState } from './types';
 import { data3 } from './data';
 import YoutTubeModal from './components/modals/YoutubeModal';
 import Alert from './components/Alert';
 import ActualWinModal from './components/modals/ActualWinModal';
 import FakeLossModal from './components/modals/FakeLossModal';
+import GameOverAlert from './components/GameOverAlert';
 
 function App() {
 	const [gameState, setGameState] = useState({} as GameState);
@@ -25,9 +23,11 @@ function App() {
 	const [showYtModal, setShowYtModal] = useState(false);
 	const [hasFakeLost, setHasFakeLost] = useState(false);
 	const [hasWon, setHasWon] = useState(false);
+	const [gameOver, setGameOver] = useState(false);
 	const [isAllowedToCloseYtModal, setIsAllowedToCloseYtModal] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
 	const [keyPressed] = useState([] as string[]);
+	const [currentlySeeding, setCurrentlySeeding] = useState(false);
 	const grunt = new Audio('src/assets/grunt1.mp3');
 	const bubblegum = new Audio('src/assets/bubblegum.mp3');
 
@@ -40,7 +40,7 @@ function App() {
 			let fetchedGameState = await fetchGameState();
 			if (!fetchedGameState) return;
 
-			console.log('fetchedGameState', fetchedGameState);
+			// console.log('fetchedGameState', fetchedGameState);
 			if (!fetchedGameState?.crossword) {
 				console.log('no gamestate, seeding db', fetchedGameState);
 				await seedDb();
@@ -49,7 +49,6 @@ function App() {
 			if (!fetchedGameState) return;
 
 			const answers = getAnswers(fetchedGameState);
-			console.log('answers: ', answers);
 			setAnswers(answers);
 			setGameState(fetchedGameState);
 		};
@@ -63,38 +62,59 @@ function App() {
 			keyPressed.push(e.key);
 
 			const lastFive = keyPressed.slice(-5);
-			console.log('lastFive', lastFive);
+			const lastSix = keyPressed.slice(-6);
+			const lastSeven = keyPressed.slice(-7);
+			const lastEight = keyPressed.slice(-8);
+			const lastNine = keyPressed.slice(-9);
 
 			if (lastFive.join('').toUpperCase() === 'GRYNT') {
 				grunt.play();
 			}
-			const lastSeven = keyPressed.slice(-7);
-			console.log('lastSeven', lastSeven);
 
 			if (lastSeven.join('').toUpperCase() === 'KICKASS') {
 				bubblegum.play();
 			}
 
+			if (lastEight.join('').toUpperCase() === 'UPDATEDB') {
+				seedDb();
+			}
+
+			if (lastSeven.join('').toUpperCase() === 'CLEARLS') {
+				clearLocalStorage();
+			}
+
+			if (lastEight.join('').toUpperCase() === 'TRYAGAIN') {
+				console.log('Restarting game');
+
+				seedDb();
+				setTimeout(() => {
+					clearLocalStorage();
+				}, 2000);
+			}
+
 			if (keyPressed.length > 18) {
-				keyPressed.splice(0, keyPressed.length - 8);
-				console.log('keyPressed', keyPressed);
+				keyPressed.splice(0, keyPressed.length - 10);
 			}
 		});
 	}, []);
 
 	useEffect(() => {
 		if (gameState.currentTimer < 1140 && gameState.crossword) {
-			postGameState(gameState);
+			!currentlySeeding && postGameState(gameState);
 		}
 
 		if (timerRunOut) {
-			postGameState(gameState);
+			!currentlySeeding && postGameState(gameState);
 		}
 	}, [gameState.currentTimer, timerRunOut]);
 
 	async function seedDb() {
+		setCurrentlySeeding(true);
 		const response = await postGameState(data3);
-		console.log(response);
+		console.log('database updated', response);
+		setTimeout(() => {
+			setCurrentlySeeding(false);
+		}, 1200);
 	}
 
 	useEffect(() => {
@@ -106,9 +126,10 @@ function App() {
 				};
 				setGameState(newGameState);
 				setHasWon(true);
+				setGameOver(true);
 				console.log('all answers found gj bro');
 			}
-			postGameState(gameState);
+			if (!currentlySeeding) postGameState(gameState);
 		}
 	}, [postToDbToggle]);
 
@@ -120,11 +141,6 @@ function App() {
 		};
 		setGameState(updatedCrossword);
 	};
-
-	// const nextPhaseBegun = useMemo(() => {
-	// 	if (gameState?.something?.length > 0) return true;
-	// 	else return false;
-	// }, [gameState?.something]);
 
 	const handleTimeRunOut = () => {
 		console.log('time run out');
@@ -168,7 +184,7 @@ function App() {
 		setTimeout(() => {
 			setIsAllowedToCloseYtModal(true);
 		}, 8000);
-		console.log('isAllowedToCloseYtModal', isAllowedToCloseYtModal);
+		// console.log('isAllowedToCloseYtModal', isAllowedToCloseYtModal);
 	}, [showYtModal, timerRunOut]);
 
 	const hasBeenRickRolled = useMemo(() => {
@@ -184,17 +200,19 @@ function App() {
 
 	return (
 		<>
-			<>
-				<FakeLossModal
-					isOpen={hasFakeLost && !showYtModal && !hasBeenRickRolled}
-					onClose={() => {}}
-				/>
-				<YoutTubeModal
-					className={`${setShowModalAfterSmallDelay}`}
-					isOpen={showYtModal && !hasBeenRickRolled}
-					onClose={() => isAllowedToCloseYtModal && handleYoutubeModalClose()}
-				/>
-			</>
+			{!hasWon && !gameOver && (
+				<>
+					<FakeLossModal
+						isOpen={hasFakeLost && !showYtModal && !hasBeenRickRolled}
+						onClose={() => {}}
+					/>
+					<YoutTubeModal
+						className={`${setShowModalAfterSmallDelay}`}
+						isOpen={showYtModal && !hasBeenRickRolled}
+						onClose={() => isAllowedToCloseYtModal && handleYoutubeModalClose()}
+					/>
+				</>
+			)}
 			<ActualWinModal isOpen={hasWon} onClose={() => setHasWon(false)} />
 			{gameState && (
 				<div
@@ -218,7 +236,7 @@ function App() {
 									initialTimer={initialTimer}
 								/>
 							)}
-							<button
+							{/* <button
 								className="btn btn-secondary absolute left-15 top-3"
 								onClick={() => clearLocalStorage()}
 							>
@@ -230,7 +248,7 @@ function App() {
 								onClick={() => seedDb()}
 							>
 								Seed Data Base
-							</button>
+							</button> */}
 							<h1 className="text-secondary text-5xl font-semibold mb-10">
 								Sørens Store Krydsord Om Alting
 							</h1>
@@ -249,6 +267,9 @@ function App() {
 						</div>
 					)}
 					{showAlert && <Alert />}
+					{gameOver && !hasWon && (
+						<GameOverAlert text="Type TRYAGAIN if you want to do this again" />
+					)}
 				</div>
 			)}
 		</>
@@ -260,9 +281,9 @@ function App() {
 		if (!answerToUpdate || answerToUpdate.completed === true) {
 			if (!answerToUpdate) console.log('answerToUpdate is undefined');
 			if (answerToUpdate?.completed === true)
-				console.log('answer is already completed');
+				// console.log('answer is already completed');
 
-			return;
+				return;
 		}
 
 		const newAnswers = answers.map(a => {

@@ -111,14 +111,6 @@ export const data3: CrosswordType = {
 				completed: false,
 				id: '18',
 			},
-			19: {
-				clue: 'Billigste shotgun i CS',
-				answer: 'NOVA',
-				row: 3,
-				col: 8,
-				completed: false,
-				id: '19',
-			},
 			24: {
 				clue: 'Hvad kan og vil en svane brække? (se 21)',
 				answer: 'ARM',
@@ -217,6 +209,14 @@ export const data3: CrosswordType = {
 				completed: false,
 				id: '17',
 			},
+			19: {
+				clue: 'Billigste shotgun i CS',
+				answer: 'NOVA',
+				row: 4,
+				col: 12,
+				completed: false,
+				id: '19',
+			},
 			20: {
 				clue: 'Antallet af udviklere i IT Minds der har erfaring med at udvikle til Windows Phone',
 				answer: 'EN',
@@ -234,7 +234,7 @@ export const data3: CrosswordType = {
 				id: '21',
 			},
 			22: {
-				clue: 'Hvad er der en smule mindre af på kontoret, når der spilles autopets?',
+				clue: 'Hvad er der en smule mindre af på kontoret, når der spilles Super Autopets?',
 				answer: 'RO',
 				row: 0,
 				col: 10,
