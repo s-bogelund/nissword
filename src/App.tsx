@@ -25,11 +25,11 @@ function App() {
 	const [showYtModal, setShowYtModal] = useState(false);
 	const [hasFakeLost, setHasFakeLost] = useState(false);
 	const [hasWon, setHasWon] = useState(false);
-	const [isAllowedToCloseModal, setIsAllowedToCloseYtModal] = useState(false);
+	const [isAllowedToCloseYtModal, setIsAllowedToCloseYtModal] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
 	const [alarmHasPlayed, setAlarmHasPlayed] = useState(false);
 	const [hasFakeWon, setHasFakeWon] = useState(false);
-	const modalButtonRef = useRef<HTMLButtonElement>(null);
+	const [showSomething, setShowSomething] = useState(false);
 	const [keyPressed] = useState([] as string[]);
 	const grunt = new Audio('src/assets/grunt1.mp3');
 	const alarm = new Audio('src/assets/alarm.wav');
@@ -72,19 +72,22 @@ function App() {
 			if (lastFive.join('').toUpperCase() === 'GRYNT') {
 				grunt.play();
 			}
-			const lastSevent = keyPressed.slice(-7);
-			console.log('lastSeven', lastSevent);
+			const lastSeven = keyPressed.slice(-7);
+			console.log('lastSeven', lastSeven);
 
-			if (lastSevent.join('').toUpperCase() === 'KICKASS') {
+			if (lastSeven.join('').toUpperCase() === 'KICKASS') {
 				bubblegum.play();
 			}
 
-			if (keyPressed.length > 18) keyPressed.splice(0, keyPressed.length - 8);
+			if (keyPressed.length > 18) {
+				keyPressed.splice(0, keyPressed.length - 8);
+				console.log('keyPressed', keyPressed);
+			}
 		});
 	}, []);
 
 	useEffect(() => {
-		if (gameState.currentTimer < 860 && gameState.crossword) {
+		if (gameState.currentTimer < 1140 && gameState.crossword) {
 			postGameState(gameState);
 		}
 
@@ -136,7 +139,7 @@ function App() {
 		};
 		setGameState(newGameState);
 		setHasFakeLost(true);
-		if (!alarmHasPlayed) {
+		if (!nextPhaseBegun) {
 			alarm.play();
 			setAlarmHasPlayed(true);
 		}
@@ -170,24 +173,35 @@ function App() {
 		}
 		setTimeout(() => {
 			setIsAllowedToCloseYtModal(true);
-		}, 8000);
+		}, 7000);
+		console.log('isAllowedToCloseYtModal', isAllowedToCloseYtModal);
 	}, [showYtModal, timerRunOut]);
+
+	const hasBeenRickRolled = useMemo(() => {
+		const hasBeenRickRolled = localStorage.getItem('hasBeenRickRolled');
+		if (!!hasBeenRickRolled) return true;
+		else return false;
+	}, [timerRunOut, showYtModal]);
+
+	const handleYoutubeModalClose = () => {
+		setShowYtModal(false);
+		localStorage.setItem('hasBeenRickRolled', 'true');
+	};
 
 	return (
 		<>
-			{!nextPhaseBegun && (
-				<>
-					<FakeLossModal
-						isOpen={hasFakeLost && !nextPhaseBegun}
-						onClose={() => {}}
-					/>
-					<YoutTubeModal
-						className={`${setShowModalAfterSmallDelay}`}
-						isOpen={showYtModal}
-						onClose={() => isAllowedToCloseModal && setShowYtModal(false)}
-					/>
-				</>
-			)}
+			<>
+				<FakeLossModal
+					isOpen={hasFakeLost && !showYtModal && !hasBeenRickRolled}
+					onClose={() => {}}
+				/>
+				<YoutTubeModal
+					className={`${setShowModalAfterSmallDelay}`}
+					isOpen={showYtModal && !hasBeenRickRolled}
+					onClose={() => isAllowedToCloseYtModal && handleYoutubeModalClose()}
+				/>
+			</>
+			)
 			<FakeWinnerModal
 				isOpen={!nextPhaseBegun && hasFakeWon}
 				onClose={() => setHasWon(false)}
@@ -202,8 +216,9 @@ function App() {
 							className="flex flex-col items-center mt-8 w-full"
 							id="modal-root"
 						>
-							{!nextPhaseBegun && !!gameState?.currentTimer && (
+							{!!gameState?.currentTimer && (
 								<CountDown
+									ended={hasFakeLost && hasBeenRickRolled}
 									shouldStop={hasWon}
 									onCounterEnd={() => {
 										handleTimeRunOut();
@@ -229,7 +244,7 @@ function App() {
 							<h1 className="text-secondary text-5xl font-semibold mb-10">
 								Sørens Store Krydsord Om Alting
 							</h1>
-							<div className=" w-full h-fit max-w-[1450px] max-h-[1100px] ">
+							<div className=" w-full h-fit max-w-[1550px] max-h-[1100px] ">
 								{gameState.crossword && (
 									<Crossword
 										triedToCheat={() => setShowYtModal(true)}
@@ -253,7 +268,10 @@ function App() {
 		let answerToUpdate: Answer | undefined = answers.find(a => a.id === id);
 
 		if (!answerToUpdate || answerToUpdate.completed === true) {
-			console.log('Answer not found');
+			if (!answerToUpdate) console.log('answerToUpdate is undefined');
+			if (answerToUpdate?.completed === true)
+				console.log('answer is already completed');
+
 			return;
 		}
 

@@ -51,7 +51,7 @@ const Modal: FC<Dialog> = props => {
 		);
 		/*eslint-enable */
 		return () => {
-			console.log(portalElement);
+			// console.log(portalElement);
 
 			setMounted(false);
 		};

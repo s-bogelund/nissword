@@ -13,6 +13,7 @@ type CountDownProps = {
 	onCounterUpdate: (count: number) => void;
 	onCounterEnd: () => void;
 	shouldStop: boolean;
+	ended: boolean;
 };
 
 const CountDown: FC<CountDownProps> = ({
@@ -21,6 +22,7 @@ const CountDown: FC<CountDownProps> = ({
 	onCounterUpdate,
 	onCounterEnd,
 	shouldStop,
+	ended,
 }) => {
 	const [countDown, setCountDown] = useState(currentTimer);
 	const [testCountDown, setTestCountDown] = useState(currentTimer);
@@ -65,7 +67,7 @@ const CountDown: FC<CountDownProps> = ({
 			setSpeedMultiplier(handleReloadMultiplier());
 		}
 
-		if (speedMultiplier < 3.5) {
+		if (speedMultiplier < 4.2) {
 			return speedMultiplier * 100;
 		}
 
@@ -87,34 +89,47 @@ const CountDown: FC<CountDownProps> = ({
 		else if (countDown > 0.5 * initialTimer) return 'text-yellow-500';
 		else if (countDown > 0.4 * initialTimer) return 'text-orange-400';
 		else if (countDown > 0.3 * initialTimer) return 'text-orange-500';
-		else if (countDown > 0.2 * initialTimer) return 'text-orange-500';
+		else if (countDown > 0.2 * initialTimer) return 'text-orange-600';
 		else if (countDown > 0.1 * initialTimer) return 'text-red-500';
 		else return 'text-red-700';
 	}, [countDown]);
 
-	// <span
-	// 	className={`countdown gap-1 text-4xl font-semibold mb-2 ${countDownColor}`}
-	// >
-	// 	{/* @ts-ignore */}
-	// 	<span style={{ '--value': minutes }}></span>:{/* @ts-ignore */}
-	// 	<span style={{ '--value': seconds }}></span>
-	// </span>
-	return (
-		<div className="absolute flex flex-col items-center right-12 top-12 w-24">
-			<div
-				className={`flex justify-between w-20 text-4xl font-semibold mb-2 ${countDownColor}`}
-			>
-				{minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+	const actualCounter = () => {
+		return (
+			<>
+				<div
+					className={`flex justify-between w-20 text-4xl font-semibold mb-2 ${countDownColor}`}
+				>
+					{minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+				</div>
+				<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
+					{Math.round(countDownSpeed)}
+				</h1>
+				<h1 className={`text-base font-semibold mb-2 + ${countDownColor}`}>
+					{'Spd: ' + speedMultiplier.toFixed(2)}
+				</h1>
+				<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
+					{testMinutes}:{testSeconds < 10 ? `0${testSeconds}` : testSeconds}
+				</h1>
+			</>
+		);
+	};
+
+	const endedCounter = () => {
+		return (
+			<div>
+				<div className="flex justify-between text-4xl font-semibold mb-2 ">
+					<h5 className="text-xl">
+						Tiden er ligegyldig, bliv nu bare færdig :)
+					</h5>
+				</div>
 			</div>
-			<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
-				{Math.round(countDownSpeed)}
-			</h1>
-			<h1 className={`text-base font-semibold mb-2 + ${countDownColor}`}>
-				{'Spd: ' + speedMultiplier.toFixed(2)}
-			</h1>
-			<h1 className={`text-xl font-semibold mb-2 + ${countDownColor}`}>
-				{testMinutes}:{testSeconds < 10 ? `0${testSeconds}` : testSeconds}
-			</h1>
+		);
+	};
+
+	return (
+		<div className="absolute right-12 top-12 w-fit">
+			{ended ? endedCounter() : actualCounter()}
 		</div>
 	);
 

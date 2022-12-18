@@ -39,7 +39,7 @@ export const data1: CluesInputOriginal = {
 };
 
 export const data3: CrosswordType = {
-	currentTimer: 1200,
+	currentTimer: 40,
 	initialTimer: 1200,
 	shouldSorenBeTryingToCheat: 'no! stop!',
 	completed: false,
@@ -112,7 +112,7 @@ export const data3: CrosswordType = {
 				id: '18',
 			},
 			19: {
-				clue: 'Billigste shotgun is CS',
+				clue: 'Billigste shotgun i CS',
 				answer: 'NOVA',
 				row: 3,
 				col: 8,
@@ -126,6 +126,14 @@ export const data3: CrosswordType = {
 				col: 14,
 				completed: false,
 				id: '24',
+			},
+			16: {
+				clue: 'Hvad hed karakteren med den mest badass replik i filmhistorien? (prøv at taste KICKASS)',
+				answer: 'NADA',
+				row: 7,
+				col: 9,
+				completed: false,
+				id: '16',
 			},
 		},
 		down: {
@@ -193,14 +201,14 @@ export const data3: CrosswordType = {
 				completed: false,
 				id: '15',
 			},
-			16: {
-				clue: 'Skal oftest ikke vare ved for evigt i programmering',
-				answer: 'LOOP',
-				row: 4,
-				col: 12,
-				completed: false,
-				id: '16',
-			},
+			// 16: {
+			// 	clue: 'Hvad hed karakteren med den mest badass replik i filmhistorien? (prøv at taste KICKASS)',
+			// 	answer: 'NADA',
+			// 	row: 0,
+			// 	col: 11,
+			// 	completed: false,
+			// 	id: '16',
+			// },
 			17: {
 				clue: 'Kan enten være noget der daler eller noget der stiger op... i næsen',
 				answer: 'SNE',
