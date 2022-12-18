@@ -120,7 +120,7 @@ const CountDown: FC<CountDownProps> = ({
 			<div>
 				<div className="flex justify-between text-4xl font-semibold mb-2 ">
 					<h5 className="text-xl">
-						Tiden er ligegyldig, bliv nu bare færdig :)
+						Timeren var bare for lidt ekstra spænding :) Tag dig bare god tid!
 					</h5>
 				</div>
 			</div>

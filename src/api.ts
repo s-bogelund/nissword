@@ -7,8 +7,8 @@ import {
 	MyClueType,
 } from './types';
 import SimpleCrypto from 'simple-crypto-js';
-// const BASE_API_URL = 'https://nissdb.herokuapp.com/api';
-const BASE_API_URL = 'http://localhost:4000/api';
+const BASE_API_URL = 'https://nissdb.herokuapp.com/api';
+// const BASE_API_URL = 'http://localhost:4000/api';
 
 export const ENCRYPTION_KEY = 'phantom_menace_bad';
 var simple = new SimpleCrypto(ENCRYPTION_KEY);

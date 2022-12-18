@@ -1,5 +1,4 @@
 import React, { FC, PointerEvent, useEffect, useMemo } from 'react';
-import { data1 } from '../data';
 import { Crossword as CrosswordLib } from '@jaredreisinger/react-crossword';
 import {
 	CluesInputOriginal,
@@ -38,7 +37,6 @@ const Crossword: FC<CrosswordProps> = ({
 		if (solved === 'true') {
 			triedToCheat();
 			localStorage.setItem('crosswordSolved', 'false');
-			localStorage.setItem('ErSørenDum?', 'Ja');
 		}
 		updateFromRealStorage();
 	}, []);

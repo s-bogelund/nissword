@@ -1,45 +1,8 @@
 import { CluesInputOriginal } from '@jaredreisinger/react-crossword/dist/types';
 import { CrosswordType } from './types';
 
-export const data1: CluesInputOriginal = {
-	across: {
-		1: {
-			clue: 'one plus one',
-			answer: 'TWO',
-			row: 0,
-			col: 0,
-		},
-		3: {
-			clue: 'two plus two',
-			answer: 'error',
-			row: 2,
-			col: 2,
-		},
-	},
-	down: {
-		2: {
-			clue: 'three minus two',
-			answer: 'ONE',
-			row: 0,
-			col: 2,
-		},
-		4: {
-			clue: 'three minus two',
-			answer: 'ONE',
-			row: 2,
-			col: 5,
-		},
-		5: {
-			clue: 'Guess a few more to get this hint',
-			answer: 'ONE',
-			row: 4,
-			col: 3,
-		},
-	},
-};
-
 export const data3: CrosswordType = {
-	currentTimer: 40,
+	currentTimer: 1200,
 	initialTimer: 1200,
 	shouldSorenBeTryingToCheat: 'no! stop!',
 	completed: false,
