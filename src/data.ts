@@ -135,6 +135,14 @@ export const data3: CrosswordType = {
 				completed: false,
 				id: '16',
 			},
+			25: {
+				clue: '01101111 01101011',
+				answer: 'OK',
+				row: 12,
+				col: 9,
+				completed: false,
+				id: '25',
+			},
 		},
 		down: {
 			1: {

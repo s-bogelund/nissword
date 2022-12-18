@@ -14,7 +14,7 @@ import { Answer, CrosswordType as GameState } from './types';
 import { data3 } from './data';
 import YoutTubeModal from './components/modals/YoutubeModal';
 import Alert from './components/Alert';
-import FakeWinnerModal from './components/modals/ActualWinModal';
+import ActualWinModal from './components/modals/ActualWinModal';
 import FakeLossModal from './components/modals/FakeLossModal';
 
 function App() {
@@ -28,8 +28,6 @@ function App() {
 	const [isAllowedToCloseYtModal, setIsAllowedToCloseYtModal] = useState(false);
 	const [showAlert, setShowAlert] = useState(false);
 	const [alarmHasPlayed, setAlarmHasPlayed] = useState(false);
-	const [hasFakeWon, setHasFakeWon] = useState(false);
-	const [showSomething, setShowSomething] = useState(false);
 	const [keyPressed] = useState([] as string[]);
 	const grunt = new Audio('src/assets/grunt1.mp3');
 	const alarm = new Audio('src/assets/alarm.wav');
@@ -109,7 +107,8 @@ function App() {
 					completed: true,
 				};
 				setGameState(newGameState);
-				setHasWon(newGameState.completed);
+				setHasWon(true);
+				console.log('all answers found gj bro');
 			}
 			postGameState(gameState);
 		}
@@ -124,10 +123,10 @@ function App() {
 		setGameState(updatedCrossword);
 	};
 
-	const nextPhaseBegun = useMemo(() => {
-		if (gameState?.something?.length > 0) return true;
-		else return false;
-	}, [gameState?.something]);
+	// const nextPhaseBegun = useMemo(() => {
+	// 	if (gameState?.something?.length > 0) return true;
+	// 	else return false;
+	// }, [gameState?.something]);
 
 	const handleTimeRunOut = () => {
 		console.log('time run out');
@@ -139,7 +138,7 @@ function App() {
 		};
 		setGameState(newGameState);
 		setHasFakeLost(true);
-		if (!nextPhaseBegun) {
+		if (!hasBeenRickRolled) {
 			alarm.play();
 			setAlarmHasPlayed(true);
 		}
@@ -173,7 +172,7 @@ function App() {
 		}
 		setTimeout(() => {
 			setIsAllowedToCloseYtModal(true);
-		}, 7000);
+		}, 8000);
 		console.log('isAllowedToCloseYtModal', isAllowedToCloseYtModal);
 	}, [showYtModal, timerRunOut]);
 
@@ -201,9 +200,8 @@ function App() {
 					onClose={() => isAllowedToCloseYtModal && handleYoutubeModalClose()}
 				/>
 			</>
-			)
-			<FakeWinnerModal
-				isOpen={!nextPhaseBegun && hasFakeWon}
+			<ActualWinModal
+				isOpen={hasWon || true}
 				onClose={() => setHasWon(false)}
 			/>
 			{gameState && (
@@ -244,7 +242,7 @@ function App() {
 							<h1 className="text-secondary text-5xl font-semibold mb-10">
 								Sørens Store Krydsord Om Alting
 							</h1>
-							<div className=" w-full h-fit max-w-[1550px] max-h-[1100px] ">
+							<div className=" w-full h-fit max-w-[1550px] max-h-[1150px] ">
 								{gameState.crossword && (
 									<Crossword
 										triedToCheat={() => setShowYtModal(true)}
