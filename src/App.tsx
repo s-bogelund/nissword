@@ -28,8 +28,8 @@ function App() {
 	const [showAlert, setShowAlert] = useState(false);
 	const [keyPressed] = useState([] as string[]);
 	const [currentlySeeding, setCurrentlySeeding] = useState(false);
-	const grunt = new Audio('src/assets/grunt1.mp3');
-	const bubblegum = new Audio('src/assets/bubblegum.mp3');
+	const grunt = new Audio('/grunt1.mp3');
+	const bubblegum = new Audio('/bubblegum.mp3');
 
 	const clearLocalStorage = () => {
 		localStorage.clear();
@@ -221,6 +221,7 @@ function App() {
 		<>
 			{!hasWon && !gameOver && (
 				<>
+					{/* <FakeLossModal isOpen={true} onClose={() => {}} /> */}
 					<FakeLossModal
 						isOpen={hasFakeLost && !showYtModal && !hasBeenRickRolled}
 						onClose={() => {}}

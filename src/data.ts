@@ -2,7 +2,7 @@ import { CluesInputOriginal } from '@jaredreisinger/react-crossword/dist/types';
 import { CrosswordType } from './types';
 
 export const data3: CrosswordType = {
-	currentTimer: 1200,
+	currentTimer: 20,
 	initialTimer: 1200,
 	shouldSorenBeTryingToCheat: 'no! stop!',
 	completed: false,

@@ -12,7 +12,7 @@ const FakeLossModal: FC<Dialog> = ({ className, isOpen, onClose }) => {
 		>
 			<div className="flex flex-col items-center justify-center text-center w-[30vw] h-fit p-10 gap-4">
 				<p className="text-xl mb-4">FUCKING ØV</p>
-				<img src="/src/assets/saddest-pepe.png"></img>
+				<img src="/saddest-pepe.png"></img>
 				<p className="text-base">Shit, det nåede du sgu ikke hva?</p>
 				<p className="text-base">
 					Det er jo lidt kedeligt, hvis du ikke kan få lov at komme videre, så
