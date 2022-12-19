@@ -118,7 +118,7 @@ const CountDown: FC<CountDownProps> = ({
 	const endedCounter = () => {
 		return (
 			<div>
-				<div className="flex justify-between text-4xl font-semibold mb-2 ">
+				<div className="flex justify-between text-4xl font-semibold mb-2 w-40">
 					<h5 className="text-xl">
 						Timeren var bare for lidt ekstra spænding :) Tag dig bare god tid!
 					</h5>
